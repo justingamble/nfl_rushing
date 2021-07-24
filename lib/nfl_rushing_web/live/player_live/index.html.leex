@@ -1,0 +1,152 @@
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, NflRushingWeb.PlayerLive.FormComponent,
+    id: @player.id || :new,
+    title: @page_title,
+    action: @live_action,
+    player: @player,
+    return_to: Routes.player_index_path(@socket, :index) %>
+<% end %>
+
+<div class="mb-4 flex justify-between items-center">
+  <form phx-submit="player-filter" class="flex-wrap form-filter my-2">
+    <div class="bg-white flex items-center">
+      <input type="text" name="player_name" value="<%= @player %>" class="border-b-2 border-green-700 focus:outline-none focus:ring focus:ring-green-200 p-2"
+            placeholder="<%= if @player_filter != "" do @player_filter else "Player Name" end %>"
+            autofocus autocomplete="off"
+            <%= if @loading, do: "readonly" %> />
+
+      <button type="submit" class="bg-green-600 hover:bg-green-700 focus:outline-none text-white rounded-md ml-2 p-3">
+          <svg class="inline-flex w-5 h-5 text-gray-600 cursor-pointer" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="white" viewBox="0 0 24 24">
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0x">
+            </path>
+          </svg>
+          Filter players
+      </button>
+    </div>
+  </form>
+
+  <%= f = form_for :sort_by_form, "#", phx_change: "sort-selected", class: "form-sort-by" %>
+      <%= label(f, :sort_by) %>
+      <%= select(f, :sort_by, @sort_by_choices, selected: @sort_by, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
+  </form>
+</div>
+
+<%= f = form_for :per_page_form, "#", phx_change: "per-page-selected", class: "form-per-page" %>
+      Show
+      <%= select(f, :per_page, @per_page_choices, selected: @options.per_page, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
+      per page
+</form>
+
+<%= if @loading do %>
+  <div class="loader">
+    Loading...
+  </div>
+<% end %>
+
+<div class="results">
+  <div class="flex justify-between items-center my-4">
+    <div class="count">
+      <label class="results-text">Total number of results:</label>
+      <label class="text-green-600 font-bold results-number"><%= @player_num_results %></label>
+    </div>
+
+    <form phx-submit="player-download" class="form-download">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 focus:outline-none text-white rounded-md p-3 download-button">
+        Download players
+      </button>
+    </form>
+  </div>
+
+  <div class="text-gray-400 flex justify-end items-center space-x-3 my-2 select-none">
+    <div class="previous-btn">
+      <%= if @options.page > 1 do %>
+        <%= pagination_link(@socket,
+                            "Previous",
+                            @options.page - 1,
+                            @options.per_page,
+                            "previous") %>
+      <% end %>
+    </div>
+    <% max_page = max_pagination_page(@player_num_results, @options.per_page) %>
+
+    <div class="space-x-2">
+      <%= if max_page > 1 do %>
+        <% pagination_numbers = pagination_range(@player_num_results, @options.page, @options.per_page) %>
+        <%= for i <- pagination_numbers, i > 0 do %>
+          <%= pagination_link(@socket,
+                                i,
+                                i,
+                                @options.per_page,
+                                (if i == @options.page do "active" else "" end) <> " hover:bg-green-400 hover:text-white py-2 px-3 rounded") %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="next-btn">
+      <%= if @options.page < max_page do %>
+        <%= pagination_link(@socket,
+                              "Next",
+                              @options.page + 1,
+                              @options.per_page,
+                              "next") %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+<%= unless (length(@players) == 0) do %>
+<div class=" bg-gray-100 flex items-center justify-center font-sans ">
+  <div class="w-5/6 bg-white shadow-md rounded my-6">
+
+    <table class=" min-w-max w-full table-auto">
+      <thead>
+        <tr class="bg-green-600 text-white uppercase text-md ">
+          <th class="py-3 px-3 text-center">#</th>
+          <th class="<%= sort_column(@sort_by, :player_name) %> py-3 px-3 text-left ">Player</th>
+          <th class="py-3 px-3 text-left">Team</th>
+          <th class="py-3 px-3 text-center">Pos</th>
+          <th class="py-3 px-3 text-center">Att/G</th>
+          <th class="py-3 px-3 text-center">Att</th>
+          <th class="<%= sort_column(@sort_by, :total_rushing_yards) %> py-3 px-3 text-center">Yds</th>
+          <th class="py-3 px-3 text-center">Avg</th>
+          <th class="py-3 px-3 text-center">Yds/G</th>
+          <th class="<%= sort_column(@sort_by, :total_rushing_touchdowns) %> py-3 px-2 text-center ">TD</th>
+          <th class= <%= if @sort_by == :longest_rush do "sortable-header" else "" end %>>Lng</th>
+          <th class="py-3 px-3 text-center">1st</th>
+          <th class="py-3 px-3 text-center">1st%</th>
+          <th class="py-3 px-2 text-center">20+</th>
+          <th class="py-3 px-2 text-center">40+</th>
+          <th class="py-3 px-2 text-center">FUM</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="players" class="text-gray-600 text-md font-light results-body">
+        <% start = ((@options.page - 1) * @options.per_page) + 1 %>
+        <%= for {player, index} <- Enum.with_index(@players, start) do %>
+          <tr class="border-b border-gray-200 player-row <%= odd_or_even(index) %>" id="player-<%= player.id %>">
+            <td class="py-3 px-3 text-center"><%= index %></td>
+            <td class="py-3 px-3"><%= player.player_name %></td>
+            <td class="py-3 px-3"><%= player.team_name %></td>
+            <td class="py-3 px-3 text-center"><%= player.player_position %></td>
+            <td class="py-3 px-3 text-center"><%= player.rushing_attempts_per_game_avg %></td>
+            <td class="py-3 px-3 text-center"><%= player.rushing_attempts %></td>
+            <td class="py-3 px-3 text-center"><%= player.total_rushing_yards %></td>
+            <td class="py-3 px-3 text-center"><%= player.rushing_avg_yards_per_attempt %></td>
+            <td class="py-3 px-3 text-center"><%= player.rushing_yards_per_game %></td>
+            <td class="py-3 px-3 text-center"><%= player.total_rushing_touchdowns %></td>
+            <td class="py-3 px-2 text-center"><%= player.longest_rush %></td>
+            <td class="py-3 px-3 text-center"><%= player.rushing_first_downs %></td>
+            <td class="py-3 px-3 text-center"><%= player.rushing_first_down_percentage %></td>
+            <td class="py-3 px-2 text-center"><%= player.rushing_twenty_plus_yards_each %></td>
+            <td class="py-3 px-2 text-center"><%= player.rushing_forty_plus_yards_each %></td>
+            <td class="py-3 px-2 text-center"><%= player.rushing_fumbles %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+<% end %>

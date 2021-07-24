@@ -1,0 +1,92 @@
+<h1>Show Player</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, NflRushingWeb.PlayerLive.FormComponent,
+    id: @player.id,
+    title: @page_title,
+    action: @live_action,
+    player: @player,
+    return_to: Routes.player_show_path(@socket, :show, @player) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Player name:</strong>
+    <%= @player.player_name %>
+  </li>
+
+  <li>
+    <strong>Team name:</strong>
+    <%= @player.team_name %>
+  </li>
+
+  <li>
+    <strong>Player position:</strong>
+    <%= @player.player_position %>
+  </li>
+
+  <li>
+    <strong>Rushing attempts per game avg:</strong>
+    <%= @player.rushing_attempts_per_game_avg %>
+  </li>
+
+  <li>
+    <strong>Rushing attempts:</strong>
+    <%= @player.rushing_attempts %>
+  </li>
+
+  <li>
+    <strong>Total rushing yards:</strong>
+    <%= @player.total_rushing_yards %>
+  </li>
+
+  <li>
+    <strong>Rushing avg yards per attempt:</strong>
+    <%= @player.rushing_avg_yards_per_attempt %>
+  </li>
+
+  <li>
+    <strong>Rushing yards per game:</strong>
+    <%= @player.rushing_yards_per_game %>
+  </li>
+
+  <li>
+    <strong>Total rushing touchdowns:</strong>
+    <%= @player.total_rushing_touchdowns %>
+  </li>
+
+  <li>
+    <strong>Longest rush:</strong>
+    <%= @player.longest_rush %>
+  </li>
+
+  <li>
+    <strong>Rushing first downs:</strong>
+    <%= @player.rushing_first_downs %>
+  </li>
+
+  <li>
+    <strong>Rushing first down percentage:</strong>
+    <%= @player.rushing_first_down_percentage %>
+  </li>
+
+  <li>
+    <strong>Rushing twenty plus yards each:</strong>
+    <%= @player.rushing_twenty_plus_yards_each %>
+  </li>
+
+  <li>
+    <strong>Rushing forty plus yards each:</strong>
+    <%= @player.rushing_forty_plus_yards_each %>
+  </li>
+
+  <li>
+    <strong>Rushing fumbles:</strong>
+    <%= @player.rushing_fumbles %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.player_show_path(@socket, :edit, @player), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.player_index_path(@socket, :index) %></span>

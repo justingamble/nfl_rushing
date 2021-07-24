@@ -1,0 +1,65 @@
+<h1>Listing Players</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, NflRushingWeb.PlayerLive.FormComponent,
+    id: @player.id || :new,
+    title: @page_title,
+    action: @live_action,
+    player: @player,
+    return_to: Routes.player_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+    <!--
+      <th>Player name</th>
+      <th>Team name</th>
+      <th>Player position</th>
+      <th>Rushing attempts per game avg</th>
+      <th>Rushing attempts</th>
+      <th>Total rushing yards</th>
+      <th>Rushing avg yards per attempt</th>
+      <th>Rushing yards per game</th>
+      <th>Total rushing touchdowns</th>
+      <th>Longest rush</th>
+      <th>Rushing first downs</th>
+      <th>Rushing first down percentage</th>
+      <th>Rushing twenty plus yards each</th>
+      <th>Rushing forty plus yards each</th>
+      <th>Rushing fumbles</th>
+      -->
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="players">
+    <%= for player <- @players do %>
+      <tr id="player-<%= player.id %>">
+        <td><%= player.player_name %></td>
+        <td><%= player.team_name %></td>
+        <td><%= player.player_position %></td>
+        <td><%= player.rushing_attempts_per_game_avg %></td>
+        <td><%= player.rushing_attempts %></td>
+        <td><%= player.total_rushing_yards %></td>
+        <td><%= player.rushing_avg_yards_per_attempt %></td>
+        <td><%= player.rushing_yards_per_game %></td>
+        <td><%= player.total_rushing_touchdowns %></td>
+        <td><%= player.longest_rush %></td>
+        <td><%= player.rushing_first_downs %></td>
+        <td><%= player.rushing_first_down_percentage %></td>
+        <td><%= player.rushing_twenty_plus_yards_each %></td>
+        <td><%= player.rushing_forty_plus_yards_each %></td>
+        <td><%= player.rushing_fumbles %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.player_show_path(@socket, :show, player) %></span>
+          <span><%= live_patch "Edit", to: Routes.player_index_path(@socket, :edit, player) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: player.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Player", to: Routes.player_index_path(@socket, :new) %></span>

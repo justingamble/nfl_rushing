@@ -168,6 +168,42 @@ defmodule NflRushingWeb.PlayerLive.Index do
     {:noreply, socket}
   end
 
+  #  <div class="previous-btn">
+  #  <button phx-click="previous-btn" class="h-8 w-8 hover:bg-green-600 hover:text-white rounded page-control" data-action="minus">
+  #    <svg fill="currentColor" viewBox="0 0 20 20">
+  #          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd">
+  #      </path>
+  #    </svg>
+  #  </button>
+  # </div>
+  #######
+  #  @impl true
+  #  def handle_event(
+  #        "previous-btn",
+  #        _,
+  #        %{assigns: %{options: paginate_options}} = socket
+  #      ) do
+  #    IO.puts("prev-button event fired!\n")
+  #
+  #    new_options = %{paginate_options | page: paginate_options.page - 1}
+  #
+  #    socket =
+  #      socket
+  #      |> assign(options: new_options)
+  #
+  #    {:noreply,
+  #      live_redirect(socket,
+  #        to:
+  #        Routes.live_path(
+  #          socket,
+  #          __MODULE__,
+  #          page: socket.assigns.options.page,
+  #          per_page: socket.assigns.options.per_page
+  #        )
+  #      )
+  #    }
+  #  end
+
   @impl true
   def handle_info({:run_player_search, player_filter, sort_column, paginate_options}, socket)
       when is_atom(sort_column) do
@@ -238,6 +274,19 @@ defmodule NflRushingWeb.PlayerLive.Index do
     )
   end
 
+  defp pagination_redirect(socket, page, per_page, class) do
+    live_patch(
+      to:
+        Routes.live_path(
+          socket,
+          __MODULE__,
+          page: page,
+          per_page: per_page
+        ),
+      class: class
+    )
+  end
+
   defp sort_options() do
     [
       "Player Name": "player_name",
@@ -280,7 +329,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
     max_pages = max_pagination_page(total_num_results, per_page)
     local_min = min(max_pages - 2, page_number - 2)
     local_max = min(max_pages, page_number + 2)
-    IO.puts("pagination_range.  min=#{inspect local_min}, max=#{inspect local_max}")
+    IO.puts("pagination_range.  min=#{inspect(local_min)}, max=#{inspect(local_max)}")
     local_min..local_max
   end
 

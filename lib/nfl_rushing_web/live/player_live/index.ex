@@ -168,41 +168,54 @@ defmodule NflRushingWeb.PlayerLive.Index do
     {:noreply, socket}
   end
 
-  #  <div class="previous-btn">
-  #  <button phx-click="previous-btn" class="h-8 w-8 hover:bg-green-600 hover:text-white rounded page-control" data-action="minus">
-  #    <svg fill="currentColor" viewBox="0 0 20 20">
-  #          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd">
-  #      </path>
-  #    </svg>
-  #  </button>
-  # </div>
-  #######
-  #  @impl true
-  #  def handle_event(
-  #        "previous-btn",
-  #        _,
-  #        %{assigns: %{options: paginate_options}} = socket
-  #      ) do
-  #    IO.puts("prev-button event fired!\n")
-  #
-  #    new_options = %{paginate_options | page: paginate_options.page - 1}
-  #
-  #    socket =
-  #      socket
-  #      |> assign(options: new_options)
-  #
-  #    {:noreply,
-  #      live_redirect(socket,
-  #        to:
-  #        Routes.live_path(
-  #          socket,
-  #          __MODULE__,
-  #          page: socket.assigns.options.page,
-  #          per_page: socket.assigns.options.per_page
-  #        )
-  #      )
-  #    }
-  #  end
+  # -------NEW
+  @impl true
+  def handle_event(
+        "player-download",
+        _,
+        %{
+          assigns: %{
+            player_filter: player_filter,
+            player_num_results: player_num_results,
+            sort_by: sort_by,
+            options: paginate_options
+          }
+        } = socket
+      ) do
+    IO.puts(
+      "**** handle_event 'player-download' pressed *****")
+
+      path = Application.app_dir(:nfl_rushing, "priv/sample_download.csv")
+      send_download(conn, {:file, path})
+
+#    per_page = String.to_integer(per_page)
+#    max_pages = max_pagination_page(player_num_results, per_page)
+#    page = min(paginate_options.page, max_pages)
+#
+#    paginate_options = %{paginate_options | page: page, per_page: per_page}
+#    send(self(), {:run_player_search, player_filter, sort_by, paginate_options})
+#
+#    socket =
+#      socket
+#      |> clear_flash()
+#      |> assign(
+#        players: [],
+#        player_num_results: 0,
+#        loading: true,
+#        options: paginate_options
+#      )
+#      |> push_patch(
+#        to:
+#          Routes.live_path(
+#            socket,
+#            __MODULE__,
+#            page: page,
+#            per_page: per_page
+#          )
+#      )
+#
+    {:noreply, socket}
+  end
 
   @impl true
   def handle_info({:run_player_search, player_filter, sort_column, paginate_options}, socket)
@@ -259,32 +272,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
     per_page = String.to_integer(params["per_page"] || "5")
 
     %{page: page, per_page: per_page}
-  end
-
-  defp pagination_link(socket, text, page, per_page, class) do
-    live_patch(text,
-      to:
-        Routes.live_path(
-          socket,
-          __MODULE__,
-          page: page,
-          per_page: per_page
-        ),
-      class: class
-    )
-  end
-
-  defp pagination_redirect(socket, page, per_page, class) do
-    live_patch(
-      to:
-        Routes.live_path(
-          socket,
-          __MODULE__,
-          page: page,
-          per_page: per_page
-        ),
-      class: class
-    )
   end
 
   defp sort_options() do

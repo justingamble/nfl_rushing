@@ -58,49 +58,43 @@
     </form>
   </div>
 
-  <div class="text-gray-400 flex justify-end items-center space-x-3 my-2 select-none">
+  <div class="space-x-2 text-gray-400 flex justify-end items-center space-x-3 my-2 select-none">
+    <%= if @options.page > 1 do %>
       <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @options.page - 1, per_page: @options.per_page) do %>
-          <button class="h-8 w-8 hover:bg-green-600 hover:text-white rounded page-control" data-action="minus">
+          <button class="h-8 w-8 hover:bg-green-400 hover:text-white rounded page-control" data-action="minus">
             <svg fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd">
               </path>
             </svg>
           </button>
       <% end %>
+    <% end %>
 
-<!--    <div class="previous-btn">
-      <%= if @options.page > 1 do %>
-        <%= pagination_link(@socket,
-                            "Previous",
-                            @options.page - 1,
-                            @options.per_page,
-                            "previous") %>
-      <% end %>
-    </div> -->
     <% max_page = max_pagination_page(@player_num_results, @options.per_page) %>
 
     <div class="space-x-2">
       <%= if max_page > 1 do %>
         <% pagination_numbers = pagination_range(@player_num_results, @options.page, @options.per_page) %>
         <%= for i <- pagination_numbers, i > 0 do %>
-          <%= pagination_link(@socket,
-                                i,
-                                i,
-                                @options.per_page,
-                                (if i == @options.page do "active" else "" end) <> " hover:bg-green-400 hover:text-white py-2 px-3 rounded") %>
+          <%= live_patch(i,
+                to: Routes.live_path(@socket, __MODULE__, page: i, per_page: @options.per_page),
+                class: if i == @options.page do "active" else "" end <> " hover:bg-green-400 hover:text-white py-2 px-3 rounded")
+          %>
         <% end %>
       <% end %>
     </div>
 
-    <div class="next-btn">
-      <%= if @options.page < max_page do %>
-        <%= pagination_link(@socket,
-                              "Next",
-                              @options.page + 1,
-                              @options.per_page,
-                              "next") %>
+    <%= if @options.page < max_page do %>
+      <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @options.page + 1, per_page: @options.per_page) do %>
+          <button class="h-8 w-8 hover:bg-green-400 hover:text-white rounded page-control" data-action="plus">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd">
+              </path>
+            </svg>
+          </button>
       <% end %>
-    </div>
+    <% end %>
+
   </div>
 </div>
 

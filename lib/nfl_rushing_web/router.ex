@@ -17,7 +17,7 @@ defmodule NflRushingWeb.Router do
   scope "/api", NflRushingWeb.Api, as: :api do
     pipe_through :api
 
-    resources "/download", DownloadController, only: [:index]
+    get "/download", DownloadController, :download
   end
 
   scope "/", NflRushingWeb do

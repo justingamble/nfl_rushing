@@ -50,7 +50,7 @@ defmodule NflRushing.PlayerStats do
   # Example criteria:  [player_name: "joe"]
   # will find all records where player_name contains 'joe' as part/all of the name.
   def list_players(criteria) when is_list(criteria) do
-    #:timer.sleep(3000)      ## Useful for testing load icon
+    # :timer.sleep(3000)      ## Useful for testing load icon
 
     query = from(p in Player)
 

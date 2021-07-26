@@ -14,6 +14,12 @@ defmodule NflRushingWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/api", NflRushingWeb.Api, as: :api do
+    pipe_through :api
+
+    resources "/download", DownloadController, only: [:index]
+  end
+
   scope "/", NflRushingWeb do
     pipe_through :browser
 
@@ -25,11 +31,6 @@ defmodule NflRushingWeb.Router do
     live "/players/:id", PlayerLive.Show, :show
     live "/players/:id/show/edit", PlayerLive.Show, :edit
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", NflRushingWeb do
-  #   pipe_through :api
-  # end
 
   # Enables LiveDashboard only for development
   #

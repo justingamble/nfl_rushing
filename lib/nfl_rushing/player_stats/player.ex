@@ -54,4 +54,52 @@ defmodule NflRushing.PlayerStats.Player do
     |> validate_number(:rushing_first_down_percentage, less_than_or_equal_to: 100)
     |> validate_number(:rushing_fumbles, greater_than_or_equal_to: 0)
   end
+
+  # Sample format of this structure:
+  #
+  #     %NflRushing.PlayerStats.Player{
+  #      __meta__: #Ecto.Schema.Metadata<:loaded, "players">,
+  #      id: 1558,
+  #      inserted_at: ~N[2021-07-03 22:03:54],
+  #      longest_rush: "0",
+  #      player_name: "Joe Kerridge",
+  #      player_position: "RB",
+  #      rushing_attempts: 1,
+  #      rushing_attempts_per_game_avg: 0.1,
+  #      rushing_avg_yards_per_attempt: 0.0,
+  #      rushing_first_down_percentage: 0.0,
+  #      rushing_first_downs: 0,
+  #      rushing_forty_plus_yards_each: 0,
+  #      rushing_fumbles: 0,
+  #      rushing_twenty_plus_yards_each: 0,
+  #      rushing_yards_per_game: 0.0,
+  #      team_name: "GB",
+  #      total_rushing_touchdowns: 0,
+  #      total_rushing_yards: 0,
+  #      updated_at: ~N[2021-07-03 22:03:54]
+  #     }
+  #
+  # This function is used, for example, when writing out the database data to CSV file.
+  defimpl String.Chars, for: __MODULE__ do
+    def to_string(player) do
+      fields = [
+        player.player_name,
+        player.team_name,
+        player.player_position,
+        player.rushing_attempts_per_game_avg,
+        player.rushing_attempts,
+        player.total_rushing_yards,
+        player.rushing_avg_yards_per_attempt,
+        player.rushing_yards_per_game,
+        player.total_rushing_touchdowns,
+        player.longest_rush,
+        player.rushing_first_downs,
+        player.rushing_first_down_percentage,
+        player.rushing_twenty_plus_yards_each,
+        player.rushing_forty_plus_yards_each,
+        player.rushing_fumbles
+      ]
+      _string = "" <> Enum.join(fields, ",")
+    end
+  end
 end

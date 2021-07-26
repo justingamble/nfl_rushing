@@ -1,54 +1,40 @@
 defmodule NflRushingWeb.Api.DownloadController do
-
   use NflRushingWeb, :controller
-
   alias NflRushing.PlayerStats
-#  alias NflRushing.PlayerStats.Player
 
+  @success_status 200
+  @filename "Player.Download.csv"
 
-  def download(conn, %{"sort_by" => sort_by, "player_filter" => player_filter} = params) do
+  def download(conn, %{"sort_by" => sort_by, "player_filter" => player_filter} = _params) do
     IO.puts("*** download controller index executing!")
-    IO.puts("My params are #{inspect params}")
-    IO.puts(" .... My player filter is #{inspect player_filter}")
-    IO.puts(" .... My sort column is #{inspect sort_by}")
-#    IO.puts(" .... My return to is [#{inspect return_to}]")
+    IO.puts(" .... My player filter is #{inspect(player_filter)}")
+    IO.puts(" .... My sort column is #{inspect(sort_by)}")
 
-    my_players = list_players(player_filter, String.to_atom(sort_by))
-    IO.puts("My players are: #{inspect my_players}")
+    # path = Application.app_dir(:nfl_rushing, "priv/sample_download.csv")
 
-    path = Application.app_dir(:nfl_rushing, "priv/sample_download.csv")
-#    send_download(conn, {:file, path})
-
-    filename = "Player.Download.csv"
+    csv_string =
+      list_players(player_filter, String.to_atom(sort_by))
+      |> get_csv_string
 
     conn
     |> put_resp_content_type("text/csv")
-    |> put_resp_header("content-disposition", "attachment; filename=\"#{filename}\"")
-
-    |> send_resp(200, path)  # <--- make this a string of the data to return.
-#    :timer.sleep(3000)
-
-#    render(conn, "index.json", test: "test123")
-#    redirect(conn, to: "/players?page=2&per_page=10")
-#####    redirect(conn, to: return_to)
-
-#    case add_key_value_to_cache(params) do
-#      {:ok, key, value} ->
-#        conn
-#        |> put_status(200)
-#        |> render("show.json", key: key, value: value)
-#
-#      _ ->
-#        conn
-#        |> put_status(422)
-#        |> json(%{"ERROR" => "Unrecognized parameter: #{inspect(params)}"})
-#    end
+    |> put_resp_header("content-disposition", "attachment; filename=\"#{@filename}\"")
+    |> send_resp(@success_status, csv_string)
+    #    send_download(conn, {:file, path})
   end
 
-  defp list_players(player_filter, sort_by) do
+  # TODO: Do I need this function?  Just call PlayerStats directly?
+  defp list_players(player_filter, sort_by) when is_atom(sort_by) do
     PlayerStats.list_players(
       player_name: player_filter,
       sort_by: sort_by
     )
+  end
+
+  defp get_csv_string(list_of_players) do
+    list_of_players
+    |> Enum.map(fn player -> "#{player}\n" end)
+    |> List.flatten
+    |> to_string
   end
 end

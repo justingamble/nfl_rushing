@@ -184,19 +184,19 @@ defmodule NflRushingWeb.PlayerLive.Index do
         } = socket
       ) do
     IO.puts("**** handle_event 'player-download' pressed *****")
-#    {:noreply, redirect(socket, to: "/api/download")}
+    #    {:noreply, redirect(socket, to: "/api/download")}
 
     # Consider having a redirect from cotnroller to here, so indicate when the file download has finished?
     {:noreply, socket |> redirect(to: "/api/download?sort_by=player_name&player_filter=joe")}
-###    {:noreply, redirect(socket, to: "/api/download?sort_by=player_name&player_filter=joe&return_to=" <> Routes.live_path(socket, __MODULE__))}
-#    {:noreply, redirect(socket, external: "https://localhost:4000/api/download?sort_by=Player_Name")}
-#    redirect(conn, external: "https://elixir-lang.org/")
 
-   # DownloadController.index
+    ###    {:noreply, redirect(socket, to: "/api/download?sort_by=player_name&player_filter=joe&return_to=" <> Routes.live_path(socket, __MODULE__))}
+    #    {:noreply, redirect(socket, external: "https://localhost:4000/api/download?sort_by=Player_Name")}
+    #    redirect(conn, external: "https://elixir-lang.org/")
 
+    # DownloadController.index
 
-##    path = Application.app_dir(:nfl_rushing, "priv/sample_download.csv")
-##    send_download(conn, {:file, path})
+    ##    path = Application.app_dir(:nfl_rushing, "priv/sample_download.csv")
+    ##    send_download(conn, {:file, path})
 
     #    per_page = String.to_integer(per_page)
     #    max_pages = max_pagination_page(player_num_results, per_page)
@@ -224,7 +224,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
     #          )
     #      )
     #
-#    {:noreply, socket}
+    #    {:noreply, socket}
   end
 
   @impl true

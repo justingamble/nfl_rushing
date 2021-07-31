@@ -98,18 +98,16 @@
 </div>
 
 <%= unless (length(@players) == 0) do %>
-  <div class="bg-gray-100 flex-auto flex-col flex-grow object-fill">
-    <!-- Download results button -->
-    <form phx-submit="player-download" class="form-download">
-      <button type="submit" class="bg-green-600 hover:bg-green-700 focus:outline-none text-white rounded-md p-3 items-center justify-center min-w-max w-5/6">
-        Download players
-      </button>
-    </form>
-  </div>
-
+<!--  <div class="bg-gray-100 flex-auto flex-col flex-grow object-fill"> -->
   <div class=" bg-gray-100 flex items-center justify-center font-sans ">
 
     <div class="w-5/6 bg-white shadow-md rounded my-6">
+
+    <form phx-submit="player-download" class="form-download">
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 focus:outline-none text-white rounded-md p-3 min-w-max w-full">
+        Download players
+      </button>
+    </form>
 
       <table class=" min-w-max w-full table-auto">
         <thead>

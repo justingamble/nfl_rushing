@@ -304,7 +304,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   defp maybe_selected_pagination_number(selected, page_num) do
     if selected == page_num do
-      "selected-pagination-number bg-green-600 "
+      "text-yellow-500 bg-green-600 font-bold "
     else
       ""
     end
@@ -312,7 +312,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   defp maybe_selected_sort_column(selected, column_name) do
     if selected == column_name do
-      "selected-table-header"
+      "text-yellow-500 font-bold"
     else
       ""
     end

@@ -302,9 +302,17 @@ defmodule NflRushingWeb.PlayerLive.Index do
     ]
   end
 
-  defp sort_column(selected, column_name) do
+  defp maybe_selected_pagination_number(selected, page_num) do
+    if selected == page_num do
+      "selected-pagination-number bg-green-600"
+    else
+      ""
+    end
+  end
+
+  defp maybe_selected_sort_column(selected, column_name) do
     if selected == column_name do
-      "sortable-header"
+      "selected-table-header"
     else
       ""
     end

@@ -1,6 +1,9 @@
 
-.sortable-header {
-    color: orange
+.selected-table-header {
+    color: orange;
+}
+.selected-pagination-number {
+    color: white;
 }
 
 /*

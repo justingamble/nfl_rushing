@@ -8,6 +8,7 @@
     return_to: Routes.player_index_path(@socket, :index) %>
 <% end %>
 
+<!-- Player Filter -->
 <div class="mb-4 flex flex-col justify-between items-center">
   <form phx-submit="player-filter" class="flex-wrap form-filter my-2">
     <div class="bg-white flex items-center">
@@ -33,6 +34,7 @@
   </div>
 </div>
 
+<!-- Loading CSS -->
 <%= if @loading do %>
   <div class="loader">
     Loading...
@@ -41,61 +43,58 @@
 
 <% max_page = max_pagination_page(@player_num_results, @options.per_page) %>
 
-<div class="flex-row">
+<div class="flex flex-row justify-between">
 
-  <!-- Results per page dropbox -->
-  <%= if max_page > 1 do %>
-    <%= f = form_for :per_page_form, "#", phx_change: "per-page-selected", class: "form-per-page" %>
-          Show
-          <%= select(f, :per_page, @per_page_choices, selected: @options.per_page, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
-          per page
-    </form>
-  <% end %>
-
-  <!-- Pagination Links -->
-  <div class="space-x-2 text-gray-400 flex justify-end items-center space-x-3 my-2 select-none object-left">
-    <%= if @options.page > 1 do %>
-      <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @options.page - 1, per_page: @options.per_page) do %>
-          <button class="h-8 w-8 hover:bg-green-50 hover:text-black hover:font-bold rounded page-control" data-action="minus">
-            <svg fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd">
-              </path>
-            </svg>
-          </button>
-      <% end %>
+  <div>
+    <!-- Results per page dropbox -->
+    <%= if max_page > 1 do %>
+      <%= f = form_for :per_page_form, "#", phx_change: "per-page-selected", class: "form-per-page" %>
+            Show
+            <%= select(f, :per_page, @per_page_choices, selected: @options.per_page, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
+            per page
+      </form>
     <% end %>
+  </div>
 
-    <div class="space-x-2">
-      <%= if max_page > 1 do %>
-        <% pagination_numbers = pagination_range(@player_num_results, @options.page, @options.per_page) %>
-        <%= for i <- pagination_numbers, i > 0 do %>
-          <%= live_patch(i,
-                to: Routes.live_path(@socket, __MODULE__, page: i, per_page: @options.per_page),
-                class: maybe_selected_pagination_number(@options.page, i) <> " hover:bg-green-700 hover:text-white hover:font-bold py-2 px-3 rounded"
-              )
-          %>
+  <div>
+    <!-- Pagination Links -->
+    <div class="space-x-2 text-gray-400 flex justify-end items-center space-x-3 my-2 select-none object-left">
+      <%= if @options.page > 1 do %>
+        <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @options.page - 1, per_page: @options.per_page) do %>
+            <button class="h-8 w-8 hover:bg-green-50 hover:text-black hover:font-bold rounded page-control" data-action="minus">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd">
+                </path>
+              </svg>
+            </button>
+        <% end %>
+      <% end %>
+
+      <div class="space-x-2">
+        <%= if max_page > 1 do %>
+          <% pagination_numbers = pagination_range(@player_num_results, @options.page, @options.per_page) %>
+          <%= for i <- pagination_numbers, i > 0 do %>
+            <%= live_patch(i,
+                  to: Routes.live_path(@socket, __MODULE__, page: i, per_page: @options.per_page),
+                  class: maybe_selected_pagination_number(@options.page, i) <> " hover:bg-green-700 hover:text-white hover:font-bold py-2 px-3 rounded"
+                )
+            %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <%= if @options.page < max_page do %>
+        <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @options.page + 1, per_page: @options.per_page) do %>
+            <button class="h-8 w-8 hover:bg-green-50 hover:text-black hover:font-bold rounded page-control" data-action="plus">
+              <svg fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd">
+                </path>
+              </svg>
+            </button>
         <% end %>
       <% end %>
     </div>
-
-    <%= if @options.page < max_page do %>
-      <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @options.page + 1, per_page: @options.per_page) do %>
-          <button class="h-8 w-8 hover:bg-green-50 hover:text-black hover:font-bold rounded page-control" data-action="plus">
-            <svg fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd">
-              </path>
-            </svg>
-          </button>
-      <% end %>
-    <% end %>
-
   </div>
-
-  <!-- Sort by (column) dropbox -->
-  <%= f = form_for :sort_by_form, "#", phx_change: "sort-selected", class: "form-sort-by object-right" %>
-      <%= label(f, :sort_by) %>
-      <%= select(f, :sort_by, @sort_by_choices, selected: @sort_by, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
-  </form>
 </div>
 
 <%= unless (length(@players) == 0) do %>
@@ -104,11 +103,23 @@
 
     <div class="w-5/6 rounded my-6">
 
-      <form phx-submit="player-download" class="form-download">
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 focus:outline-none text-white rounded-md mb-6 p-3 min-w-max w-full">
-          Download players
-        </button>
-      </form>
+      <div class="flex flex-row">
+        <!-- Sort by (column) dropbox -->
+        <div class="w-1/2">
+          <%= f = form_for :sort_by_form, "#", phx_change: "sort-selected", class: "form-sort-by object-right" %>
+              <%= label(f, :sort_by) %>
+              <%= select(f, :sort_by, @sort_by_choices, selected: @sort_by, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
+          </form>
+        </div>
+
+        <div class="w-1/2">
+          <form phx-submit="player-download" class="form-download">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 focus:outline-none text-white rounded-md mb-6 p-3 min-w-max w-full">
+              Download players
+            </button>
+          </form>
+        </div>
+      </div>
 
       <div class="bg-white shadow-md">
 

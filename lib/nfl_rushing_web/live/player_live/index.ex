@@ -304,7 +304,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   defp maybe_selected_pagination_number(selected, page_num) do
     if selected == page_num do
-      "selected-pagination-number bg-green-600"
+      "selected-pagination-number bg-green-600 "
     else
       ""
     end
@@ -323,8 +323,8 @@ defmodule NflRushingWeb.PlayerLive.Index do
   # so that we can use CSS to decorate the rows.
   defp odd_or_even(row_number) do
     case Integer.is_even(row_number) do
-      true -> "even"
-      false -> "odd"
+      true -> " bg-green-50 "
+      false -> ""
     end
   end
 

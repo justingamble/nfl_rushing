@@ -56,7 +56,7 @@
   <div class="space-x-2 text-gray-400 flex justify-end items-center space-x-3 my-2 select-none object-left">
     <%= if @options.page > 1 do %>
       <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @options.page - 1, per_page: @options.per_page) do %>
-          <button class="h-8 w-8 hover:bg-green-400 hover:text-white rounded page-control" data-action="minus">
+          <button class="h-8 w-8 hover:bg-green-50 hover:text-black hover:font-bold rounded page-control" data-action="minus">
             <svg fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd">
               </path>
@@ -71,7 +71,7 @@
         <%= for i <- pagination_numbers, i > 0 do %>
           <%= live_patch(i,
                 to: Routes.live_path(@socket, __MODULE__, page: i, per_page: @options.per_page),
-                class: maybe_selected_pagination_number(@options.page, i) <> " hover:bg-green-400 hover:text-white py-2 px-3 rounded"
+                class: maybe_selected_pagination_number(@options.page, i) <> " hover:bg-green-50 hover:text-black hover:font-bold py-2 px-3 rounded"
               )
           %>
         <% end %>
@@ -80,7 +80,7 @@
 
     <%= if @options.page < max_page do %>
       <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @options.page + 1, per_page: @options.per_page) do %>
-          <button class="h-8 w-8 hover:bg-green-400 hover:text-white rounded page-control" data-action="plus">
+          <button class="h-8 w-8 hover:bg-green-50 hover:text-black hover:font-bold rounded page-control" data-action="plus">
             <svg fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd">
               </path>

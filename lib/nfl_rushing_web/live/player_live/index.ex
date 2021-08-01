@@ -302,6 +302,10 @@ defmodule NflRushingWeb.PlayerLive.Index do
     ]
   end
 
+  defp pagination_styling do
+    " hover:bg-green-700 hover:text-white hover:font-bold rounded "
+  end
+
   defp maybe_selected_pagination_number(selected, page_num) do
     if selected == page_num do
       "text-yellow-500 bg-green-600 font-bold "

@@ -1,6 +1,11 @@
 defmodule NflRushingWeb.PageLive do
   use NflRushingWeb, :live_view
 
+  def index(conn, _params) do
+    IO.puts("*** Index for page_live is executing.... ***")
+    redirect(conn, to: "/players")
+  end
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok, assign(socket, query: "", results: %{})}

@@ -19,11 +19,15 @@ defmodule NflRushingWeb.Api.DownloadController do
 
     csv_string = header_string <> "\n" <> body_string
 
+#    live_path = Routes.live_path(conn, NflRushingWeb.PlayerLive.Index)
+
     conn
     |> put_resp_content_type("text/csv")
-    |> put_resp_header("content-disposition", "attachment; filename=\"#{@filename}\"")
+    |> put_resp_header("content-disposition", ~s(attachment; filename="#{@filename}"))
     |> send_resp(:ok, csv_string)
     #    send_download(conn, {:file, path})
+#    |> redirect(to: live_path)
+    |> halt()
   end
 
   # TODO: Do I need this function?  Just call PlayerStats directly?

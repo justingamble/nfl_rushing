@@ -45,6 +45,17 @@ defmodule NflRushing.PlayerStats do
     Player.get_stats_headers()
   end
 
+  # Credit to: https://medium.com/@feymartynov/streaming-csv-report-in-phoenix-4503b065bf4a
+  # for this idea
+  def list_players_with_stream(criteria, callback) do
+    NflRushing.Repo.transaction(fn ->
+      stream = criteria
+        |> build_player_query
+        |> NflRushing.Repo.stream
+      callback.(stream)
+    end)
+  end
+
   # Returns a list of all players, that match all the specified criteria.
   # @params
   #    criteria = a list of filter criteria.
@@ -54,6 +65,21 @@ defmodule NflRushing.PlayerStats do
   # Example criteria:  [player_name: "joe"]
   # will find all records where player_name contains 'joe' as part/all of the name.
   def list_players(criteria) when is_list(criteria) do
+    criteria
+    |> build_player_query
+    |> Repo.all()
+  end
+
+  # Returns a query that will filter/sort the players as requested, according to the criteria
+  #
+  # @params
+  #    criteria = a list of filter criteria.
+  # By using a generic filter criteria list we are prepared to support
+  # additional filter criteria, as needed.
+  #
+  # Example criteria:  [player_name: "joe"]
+  # will find all records where player_name contains 'joe' as part/all of the name.
+  def build_player_query(criteria) when is_list(criteria) do
     # :timer.sleep(3000)      ## Useful for testing load icon
 
     query = from(p in Player)
@@ -62,7 +88,7 @@ defmodule NflRushing.PlayerStats do
       "************** #{inspect(__MODULE__)}, list_players called: #{inspect(criteria)} *******\n"
     )
 
-    Enum.reduce(criteria, query, fn
+    final_query = Enum.reduce(criteria, query, fn
       {:player_name, ""}, query ->
         query
 
@@ -92,7 +118,8 @@ defmodule NflRushing.PlayerStats do
         #      {:prices, prices}, query ->
         #        from q in query, where: q.price in ^prices
     end)
-    |> Repo.all()
+
+    final_query
   end
 
   @doc """

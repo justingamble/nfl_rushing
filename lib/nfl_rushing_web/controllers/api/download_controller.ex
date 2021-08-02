@@ -21,13 +21,21 @@ defmodule NflRushingWeb.Api.DownloadController do
 
 #    live_path = Routes.live_path(conn, NflRushingWeb.PlayerLive.Index)
 
+    # Credit to: https://medium.com/@feymartynov/streaming-csv-report-in-phoenix-4503b065bf4a
+    # for the idea to use streaming for the download
     conn
     |> put_resp_content_type("text/csv")
-    |> put_resp_header("content-disposition", ~s(attachment; filename="#{@filename}"))
-    |> send_resp(:ok, csv_string)
-    #    send_download(conn, {:file, path})
-#    |> redirect(to: live_path)
-    |> halt()
+    |> put_resp_header("content-disposition", ~s[attachment; filename="#{@filename}"])
+    |> send_chunked(:ok)
+
+    PlayerStats.list_players_with_stream fn stream ->
+      for result <- stream do
+        csv_rows = NimbleCSV.RFC4180.dump_to_iodata(result.rows)
+        conn |> chunk(csv_rows)
+      end
+    end
+
+    conn
   end
 
   # TODO: Do I need this function?  Just call PlayerStats directly?

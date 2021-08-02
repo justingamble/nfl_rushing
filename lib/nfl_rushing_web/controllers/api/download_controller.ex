@@ -2,7 +2,6 @@ defmodule NflRushingWeb.Api.DownloadController do
   use NflRushingWeb, :controller
   alias NflRushing.PlayerStats
 
-  @success_status 200
   @filename "Player.Download.csv"
 
   def download(conn, %{"sort_by" => sort_by, "player_filter" => player_filter} = _params) do
@@ -12,14 +11,18 @@ defmodule NflRushingWeb.Api.DownloadController do
 
     # path = Application.app_dir(:nfl_rushing, "priv/sample_download.csv")
 
-    csv_string =
+    header_string = PlayerStats.get_stats_headers()
+
+    body_string =
       list_players(player_filter, String.to_atom(sort_by))
       |> get_csv_string
+
+    csv_string = header_string <> "\n" <> body_string
 
     conn
     |> put_resp_content_type("text/csv")
     |> put_resp_header("content-disposition", "attachment; filename=\"#{@filename}\"")
-    |> send_resp(@success_status, csv_string)
+    |> send_resp(:ok, csv_string)
     #    send_download(conn, {:file, path})
   end
 

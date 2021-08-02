@@ -2,6 +2,25 @@ defmodule NflRushing.PlayerStats.Player do
   use Ecto.Schema
   import Ecto.Changeset
 
+  # columns_keyword_list: map field_names to their display text
+  @columns_keyword_list [
+    player_name: "Player",
+    team_name: "Team",
+    player_position: "Pos",
+    rushing_attempts_per_game_avg: "Att/G",
+    rushing_attempts: "Att",
+    total_rushing_yards: "Yds",
+    rushing_avg_yards_per_attempt: "Avg",
+    rushing_yards_per_game: "Yds/G",
+    total_rushing_touchdowns: "TD",
+    longest_rush: "Lng",
+    rushing_first_downs: "1st",
+    rushing_first_down_percentage: "1st%",
+    rushing_twenty_plus_yards_each: "20+",
+    rushing_forty_plus_yards_each: "40+",
+    rushing_fumbles: "FUM"
+  ]
+
   schema "players" do
     field :player_name, :string
     field :team_name, :string
@@ -23,23 +42,7 @@ defmodule NflRushing.PlayerStats.Player do
 
   @doc false
   def changeset(player, attrs) do
-    all_columns = [
-      :player_name,
-      :team_name,
-      :player_position,
-      :rushing_attempts_per_game_avg,
-      :rushing_attempts,
-      :total_rushing_yards,
-      :rushing_avg_yards_per_attempt,
-      :rushing_yards_per_game,
-      :total_rushing_touchdowns,
-      :longest_rush,
-      :rushing_first_downs,
-      :rushing_first_down_percentage,
-      :rushing_twenty_plus_yards_each,
-      :rushing_forty_plus_yards_each,
-      :rushing_fumbles
-    ]
+    all_columns = for {key, _value} <- @columns_keyword_list, do: key
 
     player
     |> cast(attrs, all_columns)
@@ -53,6 +56,11 @@ defmodule NflRushing.PlayerStats.Player do
     |> validate_number(:rushing_first_down_percentage, greater_than_or_equal_to: 0)
     |> validate_number(:rushing_first_down_percentage, less_than_or_equal_to: 100)
     |> validate_number(:rushing_fumbles, greater_than_or_equal_to: 0)
+  end
+
+  def get_stats_headers() do
+    header_columns = for {_key, value} <- @columns_keyword_list, do: value
+    _string = "" <> Enum.join(header_columns, ",")
   end
 
   # Sample format of this structure:

@@ -41,6 +41,10 @@ defmodule NflRushing.PlayerStats do
     |> hd
   end
 
+  def get_stats_headers() do
+    Player.get_stats_headers()
+  end
+
   # Returns a list of all players, that match all the specified criteria.
   # @params
   #    criteria = a list of filter criteria.

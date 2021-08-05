@@ -59,8 +59,7 @@ defmodule NflRushing.PlayerStats.Player do
   end
 
   def get_stats_headers() do
-    header_columns = for {_key, value} <- @columns_keyword_list, do: value
-    _string = "" <> Enum.join(header_columns, ",")
+    for {_key, value} <- @columns_keyword_list, do: value
   end
 
   # Sample format of this structure:
@@ -107,6 +106,7 @@ defmodule NflRushing.PlayerStats.Player do
         player.rushing_forty_plus_yards_each,
         player.rushing_fumbles
       ]
+
       _string = "" <> Enum.join(fields, ",")
     end
   end

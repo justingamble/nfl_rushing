@@ -7,6 +7,7 @@ defmodule NflRushing.PlayerStats do
   alias NflRushing.Repo
 
   alias NflRushing.PlayerStats.Player
+  alias NimbleCSV.RFC4180, as: CSV
 
   @doc """
   Returns the list of players.
@@ -46,14 +47,11 @@ defmodule NflRushing.PlayerStats do
   end
 
   # Credit to: https://medium.com/@feymartynov/streaming-csv-report-in-phoenix-4503b065bf4a
-  # for this idea
-  def list_players_with_stream(criteria, callback) do
-    NflRushing.Repo.transaction(fn ->
-      stream = criteria
-        |> build_player_query
-        |> NflRushing.Repo.stream
-      callback.(stream)
-    end)
+  # for this idea.  I did not use the suggested callback, but otherwise took the idea.
+  def get_list_of_players_as_csv_stream(criteria) do
+    criteria
+    |> build_player_query
+    |> NflRushing.Repo.stream()
   end
 
   # Returns a list of all players, that match all the specified criteria.
@@ -85,39 +83,42 @@ defmodule NflRushing.PlayerStats do
     query = from(p in Player)
 
     IO.puts(
-      "************** #{inspect(__MODULE__)}, list_players called: #{inspect(criteria)} *******\n"
+      "******* #{inspect(__MODULE__)}, build_player_query(): , list_players called: #{
+        inspect(criteria)
+      } *****\n"
     )
 
-    final_query = Enum.reduce(criteria, query, fn
-      {:player_name, ""}, query ->
-        query
+    final_query =
+      Enum.reduce(criteria, query, fn
+        {:player_name, ""}, query ->
+          query
 
-      {:player_name, player_name}, query ->
-        player_regex = "%" <> player_name <> "%"
-        from a in query, where: like(a.player_name, ^player_regex)
+        {:player_name, player_name}, query ->
+          player_regex = "%" <> player_name <> "%"
+          from a in query, where: like(a.player_name, ^player_regex)
 
-      {:paginate, %{page: page, per_page: per_page}}, query ->
-        from q in query,
-          offset: ^((page - 1) * per_page),
-          limit: ^per_page
+        {:paginate, %{page: page, per_page: per_page}}, query ->
+          from q in query,
+            offset: ^((page - 1) * per_page),
+            limit: ^per_page
 
-      {:sort_by, :longest_rush}, query ->
-        # longest_rush contains a string of characters: optional negative sign, digits, optionally followed by 'T'.
-        # Ignore 'T' for sorting purposes.
-        from a in query,
-          order_by: fragment("cast(substring(?, '(-\\?[0-9]+)') as integer)", a.longest_rush)
+        {:sort_by, :longest_rush}, query ->
+          # longest_rush contains a string of characters: optional negative sign, digits, optionally followed by 'T'.
+          # Ignore 'T' for sorting purposes.
+          from a in query,
+            order_by: fragment("cast(substring(?, '(-\\?[0-9]+)') as integer)", a.longest_rush)
 
-      {:sort_by, column}, query ->
-        from a in query, order_by: [asc: ^column]
-        #      {:type, type}, query ->
-        #        from q in query, where: q.type == ^type
-        #
-        #      {:prices, [""]}, query ->
-        #        query
-        #
-        #      {:prices, prices}, query ->
-        #        from q in query, where: q.price in ^prices
-    end)
+        {:sort_by, column}, query ->
+          from a in query, order_by: [asc: ^column]
+          #      {:type, type}, query ->
+          #        from q in query, where: q.type == ^type
+          #
+          #      {:prices, [""]}, query ->
+          #        query
+          #
+          #      {:prices, prices}, query ->
+          #        from q in query, where: q.price in ^prices
+      end)
 
     final_query
   end

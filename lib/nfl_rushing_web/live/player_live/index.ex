@@ -187,7 +187,8 @@ defmodule NflRushingWeb.PlayerLive.Index do
     #    {:noreply, redirect(socket, to: "/api/download")}
 
     # Consider having a redirect from cotnroller to here, so indicate when the file download has finished?
-    {:noreply, socket |> redirect(to: "/api/download?sort_by=#{sort_by}&player_filter=#{player_filter}")}
+    {:noreply,
+     socket |> redirect(to: "/api/download?sort_by=#{sort_by}&player_filter=#{player_filter}")}
 
     ###    {:noreply, redirect(socket, to: "/api/download?sort_by=player_name&player_filter=joe&return_to=" <> Routes.live_path(socket, __MODULE__))}
     #    {:noreply, redirect(socket, external: "https://localhost:4000/api/download?sort_by=Player_Name")}

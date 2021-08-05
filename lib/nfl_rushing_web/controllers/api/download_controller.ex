@@ -40,9 +40,21 @@ defmodule NflRushingWeb.Api.DownloadController do
     player_stream = PlayerStats.get_list_of_players_as_csv_stream(criteria)
     IO.puts("\n*********** AFTER get_list_of_players_as_csv_stream *****\n")
 
+    # Ideas:
+    # 1. Swap the map_keys with your custom_map_keys
+    # 2. Convert map to list, sorter into your preferred order, and convert back to a map
+    # 3. Move this logic into player_stats.ex.  But the transaction need conn.  Use callback?
     my_stream =
       player_stream
+      |> Stream.map(fn x ->
+        IO.puts("================== before from_struct.. #{inspect(x)}\n")
+        x
+      end)
       |> Stream.map(&Map.from_struct(&1))
+      |> Stream.map(fn x ->
+        IO.puts("================== after from_struct.. #{inspect(x)}\n")
+        x
+      end)
       |> Stream.map(&Map.drop(&1, [:__meta__, :id, :inserted_at, :updated_at]))
       |> Stream.map(fn x ->
         IO.puts("================== after dropping extra fields.. #{inspect(x)}\n")

@@ -7,7 +7,7 @@ defmodule NflRushing.PlayerStats do
   alias NflRushing.Repo
 
   alias NflRushing.PlayerStats.Player
-  alias NimbleCSV.RFC4180, as: CSV
+#  alias NimbleCSV.RFC4180, as: CSV
 
   @doc """
   Returns the list of players.
@@ -47,11 +47,48 @@ defmodule NflRushing.PlayerStats do
   end
 
   # Credit to: https://medium.com/@feymartynov/streaming-csv-report-in-phoenix-4503b065bf4a
-  # for this idea.  I did not use the suggested callback, but otherwise took the idea.
-  def get_list_of_players_as_csv_stream(criteria) do
-    criteria
-    |> build_player_query
-    |> NflRushing.Repo.stream()
+  # for this idea of streaming the results through CSV, while keeping a separation of concerns.
+  def write_csv_download_file_from_player_query_stream(criteria, callback) do
+    # Ideas:
+    # 1. Swap the map_keys with your custom_map_keys
+    # 2. Convert map to list, sorter into your preferred order, and convert back to a map
+    #        - Use Enum.sort/3
+    #        - Have a map function of each column to its numeric position, and the
+    #          sort mapper function can then just return which one is lower.
+    # 3. Move this logic into player_stats.ex.  But the transaction need conn.  Use callback?
+
+    NflRushing.Repo.transaction(fn ->
+      player_stream =
+        criteria
+        |> build_player_query
+        # max_rows: how many rows to return in each batch?  Default=500
+        |> NflRushing.Repo.stream(max_rows: 50)
+        |> Stream.map(fn x ->
+          IO.puts("================== before from_struct.. #{inspect(x)}\n")
+          x
+        end)
+        |> Stream.map(&Map.from_struct(&1))
+        |> Stream.map(fn x ->
+          IO.puts("================== after from_struct.. #{inspect(x)}\n")
+          x
+        end)
+        |> Stream.map(&Map.drop(&1, [:__meta__, :id, :inserted_at, :updated_at]))
+        |> Stream.map(fn x ->
+          IO.puts("================== after dropping extra fields.. #{inspect(x)}\n")
+          x
+        end)
+        |> CSV.Encoding.Encoder.encode(headers: true)
+        #      |> CSV.Encoding.Encoder.encode(headers: header_string) <-- TODO: convert my map to one with header_string headers
+        |> Stream.map(fn x ->
+          IO.puts("================== after CSV.encode  #{inspect(x)}\n")
+          x
+        end)
+
+      #      --------
+      # IO.puts("Transaction, line 1\n")
+
+      callback.(player_stream)
+    end)
   end
 
   # Returns a list of all players, that match all the specified criteria.

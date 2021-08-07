@@ -43,6 +43,9 @@ defmodule NflRushingWeb.Api.DownloadController do
     # Ideas:
     # 1. Swap the map_keys with your custom_map_keys
     # 2. Convert map to list, sorter into your preferred order, and convert back to a map
+    #        - Use Enum.sort/3
+    #        - Have a map function of each column to its numeric position, and the
+    #          sort mapper function can then just return which one is lower.
     # 3. Move this logic into player_stats.ex.  But the transaction need conn.  Use callback?
     my_stream =
       player_stream

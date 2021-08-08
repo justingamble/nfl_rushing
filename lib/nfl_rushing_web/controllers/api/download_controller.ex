@@ -37,5 +37,4 @@ defmodule NflRushingWeb.Api.DownloadController do
 
     conn
   end
-
 end

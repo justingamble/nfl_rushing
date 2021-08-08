@@ -10,27 +10,11 @@
 
 <!-- Player Filter -->
 <div class="mb-4 flex flex-col justify-between items-center">
-  <form phx-submit="player-filter" class="flex-wrap form-filter my-2">
-    <div class="bg-white flex items-center">
-      <input type="text" name="player_name" value="<%= @player %>" class="border-b-2 border-green-700 focus:outline-none focus:ring focus:ring-green-200 p-2"
-            placeholder="<%= if @player_filter != "" do @player_filter else "Player Name" end %>"
-            autofocus autocomplete="off"
-            <%= if @loading, do: "readonly" %> />
-
-      <button type="submit" class="bg-green-600 hover:bg-green-700 focus:outline-none text-white rounded-md ml-2 p-3">
-          <svg class="inline-flex w-5 h-5 text-gray-600 cursor-pointer" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="white" viewBox="0 0 24 24">
-            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0x">
-            </path>
-          </svg>
-          Filter players
-      </button>
-    </div>
-  </form>
+  <%= live_component @socket, NflRushingWeb.FilterComponent,
+                     player: @player, player_filter: @player_filter, loading: @loading %>
   <div class="flex justify-between items-center my-4">
-    <div class="count">
-      <label class="results-text">Total number of results:</label>
-      <label class="text-green-600 font-bold results-number"><%= @player_num_results %></label>
-    </div>
+    <%= live_component @socket, NflRushingWeb.NumResultsComponent,
+                       player_num_results: @player_num_results %>
   </div>
 </div>
 

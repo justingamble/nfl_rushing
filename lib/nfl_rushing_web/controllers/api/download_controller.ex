@@ -1,47 +1,41 @@
 defmodule NflRushingWeb.Api.DownloadController do
   use NflRushingWeb, :controller
-  alias NflRushing.PlayerStats
 
-  @filename "Player.Download.csv"
+  @filename "NflRushing.Player.Download.csv"
 
   def download(conn, %{"sort_by" => sort_by, "player_filter" => player_filter} = _params) do
     IO.puts("*** download controller index executing!")
     IO.puts(" .... My player filter is #{inspect(player_filter)}")
     IO.puts(" .... My sort column is #{inspect(sort_by)}")
 
-    # path = Application.app_dir(:nfl_rushing, "priv/sample_download.csv")
+    #    live_path = Routes.live_path(conn, NflRushingWeb.PlayerLive.Index)
 
-    header_string = PlayerStats.get_stats_headers()
+    criteria = [player_name: player_filter, sort_by: String.to_atom(sort_by)]
 
-    body_string =
-      list_players(player_filter, String.to_atom(sort_by))
-      |> get_csv_string
+    conn =
+      conn
+      |> put_resp_content_type("text/csv")
+      |> put_resp_header("content-disposition", ~s[attachment; filename="#{@filename}"])
+      |> Plug.Conn.send_chunked(:ok)
 
-    csv_string = header_string <> "\n" <> body_string
-
-#    live_path = Routes.live_path(conn, NflRushingWeb.PlayerLive.Index)
+    # Why use a callback as 2nd parameter?  To keep a separation of concerns.
+    # This function has access to 'conn', while the NflRushing.PlayerStats module does not.
+    # The NflRushing.PlayerStats module has access to NflRushing.Repo, while this module does not.
+    {:ok, conn} =
+      NflRushing.PlayerStats.write_csv_download_file_from_player_query_stream(
+        criteria,
+        fn stream ->
+          stream
+          |> Enum.reduce_while(conn, fn data, conn ->
+            case Plug.Conn.chunk(conn, data) do
+              {:ok, conn} -> {:cont, conn}
+              {:error, :closed} -> {:halt, conn}
+            end
+          end)
+        end
+      )
 
     conn
-    |> put_resp_content_type("text/csv")
-    |> put_resp_header("content-disposition", ~s(attachment; filename="#{@filename}"))
-    |> send_resp(:ok, csv_string)
-    #    send_download(conn, {:file, path})
-#    |> redirect(to: live_path)
-    |> halt()
   end
 
-  # TODO: Do I need this function?  Just call PlayerStats directly?
-  defp list_players(player_filter, sort_by) when is_atom(sort_by) do
-    PlayerStats.list_players(
-      player_name: player_filter,
-      sort_by: sort_by
-    )
-  end
-
-  defp get_csv_string(list_of_players) do
-    list_of_players
-    |> Enum.map(fn player -> "#{player}\n" end)
-    |> List.flatten
-    |> to_string
-  end
 end

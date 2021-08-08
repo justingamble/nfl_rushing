@@ -1,4 +1,4 @@
-defmodule NflRushingWeb.NumResultsComponent do
+defmodule NflRushingWeb.PlayerLive.NumResultsComponent do
   use NflRushingWeb, :live_component
 
   def render(assigns) do

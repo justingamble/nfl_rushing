@@ -7,7 +7,7 @@ defmodule NflRushing.PlayerStats do
   alias NflRushing.Repo
 
   alias NflRushing.PlayerStats.Player
-#  alias NimbleCSV.RFC4180, as: CSV
+  #  alias NimbleCSV.RFC4180, as: CSV
 
   @doc """
   Returns the list of players.
@@ -43,7 +43,7 @@ defmodule NflRushing.PlayerStats do
   end
 
   def get_stats_headers() do
-    Player.get_stats_headers()
+#    Player.get_stats_headers()
   end
 
   # Credit to: https://medium.com/@feymartynov/streaming-csv-report-in-phoenix-4503b065bf4a
@@ -56,6 +56,24 @@ defmodule NflRushing.PlayerStats do
     #        - Have a map function of each column to its numeric position, and the
     #          sort mapper function can then just return which one is lower.
     # 3. Move this logic into player_stats.ex.  But the transaction need conn.  Use callback?
+#    column_order = [
+#      :player_name,
+#      :team_name,
+#      :player_position,
+#      :rushing_attempts_per_game_avg,
+#      :rushing_attempts,
+#      :total_rushing_yards,
+#      :rushing_avg_yards_per_attempt,
+#      :rushing_yards_per_game,
+#      :total_rushing_touchdowns,
+#      :longest_rush,
+#      :rushing_first_downs,
+#      :rushing_first_down_percentage,
+#      :rushing_twenty_plus_yards_each,
+#      :rushing_forty_plus_yards_each,
+#      :rushing_fumbles
+#    ]
+    column_order = Player.get_ordered_list_of_short_headers()
 
     NflRushing.Repo.transaction(fn ->
       player_stream =
@@ -77,19 +95,55 @@ defmodule NflRushing.PlayerStats do
           IO.puts("================== after dropping extra fields.. #{inspect(x)}\n")
           x
         end)
-        |> CSV.Encoding.Encoder.encode(headers: true)
+        |> Stream.map(&Player.convert_map_keys_to_short_versions/1)
+#        |> Stream.map(&apply_desired_column_order(&1))
+        #        |> Stream.map(&Enum.to_list(&1) |> Enum.sort( &order_columns(fn({key1, value1}, {key2, value2}) -> key1 < key2 end)
+        |> CSV.Encoding.Encoder.encode(headers: column_order)
         #      |> CSV.Encoding.Encoder.encode(headers: header_string) <-- TODO: convert my map to one with header_string headers
         |> Stream.map(fn x ->
           IO.puts("================== after CSV.encode  #{inspect(x)}\n")
           x
         end)
 
-      #      --------
-      # IO.puts("Transaction, line 1\n")
-
       callback.(player_stream)
     end)
   end
+
+
+#  defp apply_desired_column_order(player_map) when is_map(player_map) do
+#    Enum.to_list(player_map)
+#    |> IO.inspect(label: "apply_desired_column_order, player_map as list")
+#    |> Enum.sort(&desired_column_order(&1, &2))
+#    |> IO.inspect(label: "apply_desired_column_order, result")
+#    |> Map.new
+#  end
+
+#  defp desired_column_order(column1, column2) do
+#    IO.puts("desired_column_order.  received column1=#{inspect(column1)}, column2=#{inspect(column2)}")
+#    column_score(column1) < column_score(column2)
+#  end
+
+#  defp column_score({column_name, _column_value} = _column) do
+#    IO.puts("get_column_score. received #{inspect(column_name)}")
+#
+#    case column_name do
+#      :player_name -> 1
+#      :team_name -> 2
+#      :player_position -> 3
+#      :rushing_attempts_per_game_avg -> 4
+#      :rushing_attempts -> 5
+#      :total_rushing_yards -> 6
+#      :rushing_avg_yards_per_attempt -> 7
+#      :rushing_yards_per_game -> 8
+#      :total_rushing_touchdowns -> 9
+#      :longest_rush -> 10
+#      :rushing_first_downs -> 11
+#      :rushing_first_down_percentage -> 12
+#      :rushing_twenty_plus_yards_each -> 13
+#      :rushing_forty_plus_yards_each -> 14
+#      :rushing_fumbles -> 15
+#    end
+#  end
 
   # Returns a list of all players, that match all the specified criteria.
   # @params

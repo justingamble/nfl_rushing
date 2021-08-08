@@ -21,6 +21,8 @@ defmodule NflRushing.PlayerStats.Player do
     rushing_fumbles: "FUM"
   ]
 
+  @long_to_short_keys  Map.new(@columns_keyword_list)
+
   schema "players" do
     field :player_name, :string
     field :team_name, :string
@@ -42,7 +44,7 @@ defmodule NflRushing.PlayerStats.Player do
 
   @doc false
   def changeset(player, attrs) do
-    all_columns = for {key, _value} <- @columns_keyword_list, do: key
+    all_columns = get_ordered_list_of_long_headers()
 
     player
     |> cast(attrs, all_columns)
@@ -58,9 +60,23 @@ defmodule NflRushing.PlayerStats.Player do
     |> validate_number(:rushing_fumbles, greater_than_or_equal_to: 0)
   end
 
-  def get_stats_headers() do
-    for {_key, value} <- @columns_keyword_list, do: value
+  def get_ordered_list_of_long_headers() do
+    for {key, _value} <- @columns_keyword_list, do: key
   end
+
+  def get_ordered_list_of_short_headers() do
+    long_headers = get_ordered_list_of_long_headers()
+    for elem <- long_headers, into: [] do
+      Map.fetch!(@long_to_short_keys, elem)
+    end
+  end
+
+  def convert_map_keys_to_short_versions(player_map) when is_map(player_map) do
+    for {key, value} <- player_map, into: %{} do
+        {Map.fetch!(@long_to_short_keys, key), value}
+    end
+  end
+
 
   # Sample format of this structure:
   #

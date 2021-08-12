@@ -34,6 +34,14 @@
   <%= live_component @socket, NflRushingWeb.PlayerLive.NumResultsComponent,
                      player_num_results: @player_num_results %>
 </div>
+<% download_file = Path.join([:code.priv_dir(:nfl_rushing), "static", "sample_download.csv"])  %>
+<p><%= "download_file = #{inspect download_file}" %></p>
+<p><%= "routes.static_path = #{inspect Routes.static_path(@socket, download_file)}" %></p>
+<p><%= "routes.static_path with endpoint = #{inspect Routes.static_path(NflRushingWeb.Endpoint, download_file)}" %></p>
+
+<p><%= link "Download Me!", to: Routes.static_path(@socket, download_file), target: "_blank" %></p>
+<p><%= link "Another download", to: Routes.static_path(@socket, "/api/download?sort_by=#{@sort_by}&player_filter=#{@player_filter}"), target: "_blank" %></p>
+<p><%= link "Download #3", to: Routes.static_path(@socket, "/api/download?sort_by=#{@sort_by}&player_filter=#{@player_filter}") %></p>
 
 <!-- Loading CSS -->
 <%= if @loading do %>

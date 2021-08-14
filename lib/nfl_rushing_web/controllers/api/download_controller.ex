@@ -1,14 +1,16 @@
 defmodule NflRushingWeb.Api.DownloadController do
   use NflRushingWeb, :controller
+  use Task
 
   @filename "NflRushing.Player.Download.csv"
 
-  def download(conn, %{"sort_by" => sort_by, "player_filter" => player_filter} = _params) do
-    IO.puts("*** download controller index executing!")
-    IO.puts(" .... My player filter is #{inspect(player_filter)}")
-    IO.puts(" .... My sort column is #{inspect(sort_by)}")
+  def start_link(arg) do
+    Task.start_link(__MODULE__, :download2, [arg])
+  end
 
-    #    live_path = Routes.live_path(conn, NflRushingWeb.PlayerLive.Index)
+  def download(conn, %{"sort_by" => sort_by, "player_filter" => player_filter} = _params) do
+    IO.puts("====================================================================================")
+    IO.puts("Download_controller.ex.... My player filter=#{inspect(player_filter)}, sort column=#{inspect(sort_by)}")
 
     criteria = [player_name: player_filter, sort_by: String.to_atom(sort_by)]
 
@@ -36,5 +38,6 @@ defmodule NflRushingWeb.Api.DownloadController do
       )
 
     conn
+    |> halt
   end
 end

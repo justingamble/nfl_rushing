@@ -19,23 +19,26 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert render(page_live) =~ "Filter players"
   end
 
-#  test "querying players initially returns loading icon, with no player results", %{conn: conn} do
-#    {:ok, view, html} = live(conn, "/players")
-#
-#    view
-#    |> form("#playerfilter", %{player_name: ""})
-#    |> render_submit()
-#
-#    IO.puts("********* Results: [[#{inspect render(view), infinite: true}]]")
-#
-#    refute has_element?(view, "#player-table")
-#    assert has_element?(view, "#loading-icon", "Loading...")
-#  end
+  test "with no players in database, check that the correct form components are shown", %{conn: conn} do
+    {:ok, view, html} = live(conn, "/players")
 
-#  test "insert a single player and see the correct form components", %{conn: conn} do
+    assert has_element?(view, "#player-filter-form")
+    assert has_element?(view, "#number-player-results", "0")
 
-  test "insert a single player and see the correct form components", %{conn: conn} do
+    refute has_element?(view, "#loading-icon", "Loading...")
 
+    refute has_element?(view, "#per-page-dropbox")
+    refute has_element?(view, "#pagination-left-arrow")
+    refute has_element?(view, "#pagination-number-1")
+    refute has_element?(view, "#pagination-number-2")
+    refute has_element?(view, "#pagination-right-arrow")
+
+    refute has_element?(view, "#sort-by-dropbox")
+    refute has_element?(view, "#download-link")
+    refute has_element?(view, "#player-table")
+  end
+
+  test "with a single player in database, check that the correct form components are shown", %{conn: conn} do
     player_1 = create_test_player(%{player_name: "Player #1"})
 
     {:ok, view, html} = live(conn, "/players")
@@ -57,11 +60,9 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, "#sort-by-dropbox")
     assert has_element?(view, "#download-link")
     assert has_element?(view, "#player-table")
-
   end
 
-  test "insert more than 1 page of players and see the correct form components", %{conn: conn} do
-
+  test "with more than 1 page of players in database, check that the correct form components are shown", %{conn: conn} do
     for player_num <- 1..(@default_page_size+1) do
       create_test_player(%{player_name: "Player #{player_num}"})
     end
@@ -83,11 +84,9 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, "#sort-by-dropbox")
     assert has_element?(view, "#download-link")
     assert has_element?(view, "#player-table")
-
   end
 
   test "insert a single player and see the player listed in query results table", %{conn: conn} do
-
     player_1 = create_test_player(%{player_name: "Player #1"})
 
     {:ok, view, html} = live(conn, "/players")
@@ -96,6 +95,11 @@ defmodule NflRushingWeb.PlayerLiveTest do
   end
 
   defp player_row(player), do: "#player-#{player.id}"
+
+#    view
+#    |> form("#playerfilter", %{player_name: ""})
+#    |> render_submit()
+
 
 #  test "with no filtering, 326 players are queried", %{conn: conn} do
 #    {:ok, view, html} = live(conn, "/players")

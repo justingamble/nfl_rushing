@@ -6,7 +6,7 @@ defmodule NflRushingWeb.PlayerLive.NumResultsComponent do
       <div class="flex justify-between items-center my-4">
         <div class="count">
           <label class="results-text">Total number of results:</label>
-          <label class="text-green-600 font-bold results-number"><%= @player_num_results %></label>
+          <label id="number-player-results" class="text-green-600 font-bold results-number"><%= @player_num_results %></label>
         </div>
       </div>
     """

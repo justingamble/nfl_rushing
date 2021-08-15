@@ -3,6 +3,8 @@ defmodule NflRushingWeb.PlayerLiveTest do
 
   import Phoenix.LiveViewTest
 
+  @default_page_size  5
+
   test "/ redirects to /players", %{conn: conn} do
     assert {:error, {:redirect, %{to: "/players"}}} = live(conn, "/")
   end
@@ -17,21 +19,95 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert render(page_live) =~ "Filter players"
   end
 
-  test "with no filtering, 326 players are queried", %{conn: conn} do
+#  test "querying players initially returns loading icon, with no player results", %{conn: conn} do
+#    {:ok, view, html} = live(conn, "/players")
+#
+#    view
+#    |> form("#playerfilter", %{player_name: ""})
+#    |> render_submit()
+#
+#    IO.puts("********* Results: [[#{inspect render(view), infinite: true}]]")
+#
+#    refute has_element?(view, "#player-table")
+#    assert has_element?(view, "#loading-icon", "Loading...")
+#  end
+
+#  test "insert a single player and see the correct form components", %{conn: conn} do
+
+  test "insert a single player and see the correct form components", %{conn: conn} do
+
+    player_1 = create_test_player(%{player_name: "Player #1"})
+
     {:ok, view, html} = live(conn, "/players")
 
-    result = view
-             |> element("#playerfilter")
-             |> render_submit(%{player_name: ""})
+    IO.puts("********* Results: [[#{inspect render(view), infinite: true}]]")
 
-   assert result =~ "326"
-#   assert true == result
-#    assert view
-#           |> element("form #player-filter")
-#           |> render_click() =~ "326"
+    assert has_element?(view, "#player-filter-form")
+    assert has_element?(view, "#number-player-results", "1")
 
-#    assert render(page_live) =~ "326"
+    refute has_element?(view, "#loading-icon", "Loading...")
+
+    # only 1 page of results, so the page-dropbox and pagination links should be hidden
+    refute has_element?(view, "#per-page-dropbox")
+    refute has_element?(view, "#pagination-left-arrow")
+    refute has_element?(view, "#pagination-number-1")
+    refute has_element?(view, "#pagination-number-2")
+    refute has_element?(view, "#pagination-right-arrow")
+
+    assert has_element?(view, "#sort-by-dropbox")
+    assert has_element?(view, "#download-link")
+    assert has_element?(view, "#player-table")
+
   end
+
+  test "insert more than 1 page of players and see the correct form components", %{conn: conn} do
+
+    for player_num <- 1..(@default_page_size+1) do
+      create_test_player(%{player_name: "Player #{player_num}"})
+    end
+
+    {:ok, view, html} = live(conn, "/players")
+
+    assert has_element?(view, "#player-filter-form")
+    assert has_element?(view, "#number-player-results", "#{@default_page_size+1}")
+
+    refute has_element?(view, "#loading-icon", "Loading...")
+
+    assert has_element?(view, "#per-page-dropbox")
+    refute has_element?(view, "#pagination-left-arrow") # when you are on page 1, no option to see prev page
+    assert has_element?(view, "#pagination-number-1")
+    assert has_element?(view, "#pagination-number-2")
+    refute has_element?(view, "#pagination-number-3")   # there are 2 pages available, not 3
+    assert has_element?(view, "#pagination-right-arrow")
+
+    assert has_element?(view, "#sort-by-dropbox")
+    assert has_element?(view, "#download-link")
+    assert has_element?(view, "#player-table")
+
+  end
+
+  test "insert a single player and see the player listed in query results table", %{conn: conn} do
+
+    player_1 = create_test_player(%{player_name: "Player #1"})
+
+    {:ok, view, html} = live(conn, "/players")
+
+    assert has_element?(view, player_row(player_1))
+  end
+
+  defp player_row(player), do: "#player-#{player.id}"
+
+#  test "with no filtering, 326 players are queried", %{conn: conn} do
+#    {:ok, view, html} = live(conn, "/players")
+#
+#    result = view
+#             |> form("#playerfilter", %{player_name: ""})
+##             |> element("#playerfilter")
+##             |> render_submit(%{player_name: ""})
+#             |> render_submit()
+#
+#   assert result =~ "326"
+#  end
 
 ##  test "by default 5 players are listed", %{conn: conn} do
 ##    {:ok, page_live, disconnected_html} = live(conn, "/players")
@@ -47,5 +123,29 @@ defmodule NflRushingWeb.PlayerLiveTest do
 
 #    IO.puts("Page list is.... [[#{inspect render(page_live), infinite: true}]]")
 #    IO.puts("Disconnected_html is.... [[#{inspect disconnected_html}]]")
+
+  def create_test_player(attrs) do
+    {:ok, player} =
+      attrs
+      |> Enum.into(%{player_name: "TestPlayer",
+          team_name: "TN1",
+          player_position: "QB",
+          rushing_attempts_per_game_avg: 0.0,
+          rushing_attempts: 0,
+          total_rushing_yards: 0,
+          rushing_avg_yards_per_attempt: 0.0,
+          rushing_yards_per_game: 0,
+          total_rushing_touchdowns: 0,
+          longest_rush: "0",
+          rushing_first_downs: 0,
+          rushing_first_down_percentage: 0.0,
+          rushing_twenty_plus_yards_each: 0,
+          rushing_forty_plus_yards_each: 0,
+          rushing_fumbles: 0
+      })
+      |> NflRushing.PlayerStats.create_player()
+
+    player
+  end
 
 end

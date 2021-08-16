@@ -2,6 +2,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
   use NflRushingWeb.ConnCase
 
   import Phoenix.LiveViewTest
+  require Integer
 
   @default_page_size 5
 
@@ -23,7 +24,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
   test "with no players in database, check that the correct form components are shown", %{
     conn: conn
   } do
-    {:ok, view, html} = live(conn, "/players")
+    {:ok, view, _html} = live(conn, "/players")
 
     assert has_element?(view, "#player-filter-form")
     assert has_element?(view, "#number-player-results", "0")
@@ -44,11 +45,9 @@ defmodule NflRushingWeb.PlayerLiveTest do
   test "with a single player in database, check that the correct form components are shown", %{
     conn: conn
   } do
-    player_1 = create_test_player(%{player_name: "Player #1"})
+    _player_1 = create_test_player(%{player_name: "Player #1"})
 
-    {:ok, view, html} = live(conn, "/players")
-
-    IO.puts("********* Results: [[#{inspect(render(view), infinite: true)}]]")
+    {:ok, view, _html} = live(conn, "/players")
 
     assert has_element?(view, "#player-filter-form")
     assert has_element?(view, "#number-player-results", "1")
@@ -73,7 +72,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
       create_test_player(%{player_name: "Player #{player_num}"})
     end
 
-    {:ok, view, html} = live(conn, "/players")
+    {:ok, view, _html} = live(conn, "/players")
 
     assert has_element?(view, "#player-filter-form")
     assert has_element?(view, "#number-player-results", "#{@default_page_size + 1}")
@@ -99,7 +98,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
       create_test_player(%{player_name: "Player #{player_num}"})
     end
 
-    {:ok, view, html} = live(conn, "/players")
+    {:ok, view, _html} = live(conn, "/players")
 
     refute has_element?(view, "#pagination-left-arrow")
 
@@ -111,7 +110,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
   test "insert a single player and see the player listed in query results table", %{conn: conn} do
     player_1 = create_test_player(%{player_name: "Player #1"})
 
-    {:ok, view, html} = live(conn, "/players")
+    {:ok, view, _html} = live(conn, "/players")
 
     assert has_element?(view, player_row(player_1))
   end
@@ -123,7 +122,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
         create_test_player(%{player_name: "Player #{player_num}"})
       end
 
-    {:ok, view, html} = live(conn, "/players")
+    {:ok, view, _html} = live(conn, "/players")
 
     for player <- players do
       if player.player_name != "Player 6" do
@@ -152,7 +151,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
         create_test_player(%{player_name: "Player #{player_num}"})
       end
 
-    {:ok, view, html} = live(conn, "/players")
+    {:ok, view, _html} = live(conn, "/players")
 
     for player <- players do
       if player.player_name != "Player 6" do
@@ -174,18 +173,13 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  # Test filter with muliple matches (case sensitive)
-  # Test filter with muliple matches (case insensitive)
-  # Test drop-box with more than 5 selected
-  # Maybe add a render_component test.
-
   test "Filtering with no matches will not display any players", %{conn: conn} do
     players =
       for player_num <- 1..(@default_page_size + 1) do
         create_test_player(%{player_name: "Player #{player_num}"})
       end
 
-    {:ok, view, html} = live(conn, "/players")
+    {:ok, view, _html} = live(conn, "/players")
     assert has_element?(view, "#number-player-results", "#{@default_page_size + 1}")
 
     view
@@ -206,7 +200,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
         create_test_player(%{player_name: "Player #{player_num}"})
       end
 
-    {:ok, view, html} = live(conn, "/players")
+    {:ok, view, _html} = live(conn, "/players")
     assert has_element?(view, "#number-player-results", "#{@default_page_size + 1}")
 
     view
@@ -223,6 +217,72 @@ defmodule NflRushingWeb.PlayerLiveTest do
       end
     end
   end
+
+  test "Filtering by string that matches multipler players (case sensitive)", %{conn: conn} do
+    players =
+      for player_num <- 1..(@default_page_size) do
+        if (Integer.is_even(player_num)) do
+            create_test_player(%{player_name: "Matched Player #{player_num}"})
+        else
+            create_test_player(%{player_name: "Excluded Player #{player_num}"})
+        end
+      end
+
+    {:ok, view, _html} = live(conn, "/players")
+
+    assert has_element?(view, "#number-player-results", "#{@default_page_size}")
+
+    view
+    |> form("#player-filter-form", %{player_name: "Matched Player"})
+    |> render_submit()
+
+    expected_num_results = Integer.floor_div(@default_page_size, 2)
+    assert has_element?(view, "#number-player-results", "#{expected_num_results}")
+
+    for player <- players do
+      if player.player_name =~ ~r/Matched/ do
+        assert has_element?(view, player_row(player))
+      else
+        refute has_element?(view, player_row(player))
+      end
+    end
+  end
+
+  test "Filtering by string that matches multipler players (case insensitive)", %{conn: conn} do
+    players =
+      for player_num <- 1..(@default_page_size) do
+        if (Integer.is_even(player_num)) do
+            create_test_player(%{player_name: "MaTcHeD Player #{player_num}"})
+        else
+            create_test_player(%{player_name: "Excluded Player #{player_num}"})
+        end
+      end
+
+    {:ok, view, _html} = live(conn, "/players")
+
+    assert has_element?(view, "#number-player-results", "#{@default_page_size}")
+
+    view
+    |> form("#player-filter-form", %{player_name: "matcHED plaYER"})
+    |> render_submit()
+
+    expected_num_results = Integer.floor_div(@default_page_size, 2)
+    assert has_element?(view, "#number-player-results", "#{expected_num_results}")
+
+    for player <- players do
+      if player.player_name =~ ~r/matched/i do
+        assert has_element?(view, player_row(player))
+      else
+        refute has_element?(view, player_row(player))
+      end
+    end
+  end
+
+
+  # Test filter with muliple matches (case insensitive)
+  # Test drop-box with more than 5 selected
+  # Maybe add a render_component test.
+
 
   #  test "insert more than a page of players and see the first five players listed in query results table", %{conn: conn} do
   #    for player_num <- 1..(@default_page_size+1) do

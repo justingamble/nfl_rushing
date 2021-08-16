@@ -173,7 +173,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  test "Filtering with no matches will not display any players", %{conn: conn} do
+  test "Filtering with no matches will show flash message, and not display any players", %{conn: conn} do
     players =
       for player_num <- 1..(@default_page_size + 1) do
         create_test_player(%{player_name: "Player #{player_num}"})
@@ -187,6 +187,8 @@ defmodule NflRushingWeb.PlayerLiveTest do
     |> render_submit()
 
     assert has_element?(view, "#number-player-results", "0")
+
+    assert render(view) =~ ~r/alert-info.*No players matching.*Non-existent-player/
 
     for player <- players do
       refute has_element?(view, player_row(player))
@@ -308,7 +310,9 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
+  # TODO:
   # Test sorting on each column
+  # Test sorting and filtering
   # Test drop-box with more than 5 selected
   # Maybe add a render_component test.
 
@@ -340,7 +344,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
   #    assert has_element?(view, player_row(player_1))
   #  end
 
-  defp player_row(player), do: "#player-#{player.id}"
+
 
   #    view
   #    |> form("#playerfilter", %{player_name: ""})
@@ -372,6 +376,8 @@ defmodule NflRushingWeb.PlayerLiveTest do
 
   #    IO.puts("Page list is.... [[#{inspect render(page_live), infinite: true}]]")
   #    IO.puts("Disconnected_html is.... [[#{inspect disconnected_html}]]")
+
+  defp player_row(player), do: "#player-#{player.id}"
 
   def create_test_player(attrs) do
     {:ok, player} =

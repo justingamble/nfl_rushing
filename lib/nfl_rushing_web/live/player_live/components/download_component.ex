@@ -23,13 +23,16 @@ defmodule NflRushingWeb.PlayerLive.DownloadComponent do
         %{
           assigns: %{
             player_filter: player_filter,
-            sort_by: sort_by,
+            sort_by: sort_by
           }
         } = socket
       ) do
     IO.puts("**** handle_event 'player-download' pressed *****")
 
-    children = {NflRushingWeb.Api.DownloadController, [player_filter: player_filter, sort_by: sort_by, socket: socket]}
+    children =
+      {NflRushingWeb.Api.DownloadController,
+       [player_filter: player_filter, sort_by: sort_by, socket: socket]}
+
     Supervisor.start_link([children], strategy: :one_for_one)
     :timer.sleep(5000)
 
@@ -37,5 +40,4 @@ defmodule NflRushingWeb.PlayerLive.DownloadComponent do
     {:noreply,
      socket |> redirect(to: "/api/download?sort_by=#{sort_by}&player_filter=#{player_filter}")}
   end
-
 end

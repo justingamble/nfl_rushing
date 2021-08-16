@@ -94,6 +94,20 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, "#player-table")
   end
 
+  test "the left-pagination-button is shown if we are on page > 1", %{conn: conn} do
+    for player_num <- 1..(@default_page_size + 1) do
+      create_test_player(%{player_name: "Player #{player_num}"})
+    end
+
+    {:ok, view, html} = live(conn, "/players")
+
+    refute has_element?(view, "#pagination-left-arrow")
+
+    view |> element("#pagination-right-arrow") |> render_click()
+
+    assert has_element?(view, "#pagination-left-arrow")
+  end
+
   test "insert a single player and see the player listed in query results table", %{conn: conn} do
     player_1 = create_test_player(%{player_name: "Player #1"})
 
@@ -102,7 +116,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, player_row(player_1))
   end
 
-  test "insert more than a page of players and only see the page 2 players when next page is clicked with arrow",
+  test "insert more than a page of players; only see the page 2 players when right-arrow-pagination button pressed",
        %{conn: conn} do
     players =
       for player_num <- 1..(@default_page_size + 1) do
@@ -128,13 +142,34 @@ defmodule NflRushingWeb.PlayerLiveTest do
         refute has_element?(view, player_row(player))
       end
     end
+  end
 
-    #
-    #    assert has_element?(view, player_row(player_1))
-    #    assert has_element?(view, player_row(player_1))
-    #    assert has_element?(view, player_row(player_1))
-    #    assert has_element?(view, player_row(player_1))
-    #    assert has_element?(view, player_row(player_1))
+  test "insert more than a page of players; only see the page 2 players when page-2-pagination button pressed",
+       %{conn: conn} do
+    players =
+      for player_num <- 1..(@default_page_size + 1) do
+        create_test_player(%{player_name: "Player #{player_num}"})
+      end
+
+    {:ok, view, html} = live(conn, "/players")
+
+    for player <- players do
+      if player.player_name != "Player 6" do
+        assert has_element?(view, player_row(player))
+      else
+        refute has_element?(view, player_row(player))
+      end
+    end
+
+    view |> element("#pagination-number-2") |> render_click()
+
+    for player <- players do
+      if player.player_name == "Player 6" do
+        assert has_element?(view, player_row(player))
+      else
+        refute has_element?(view, player_row(player))
+      end
+    end
   end
 
   #  test "insert more than a page of players and see the first five players listed in query results table", %{conn: conn} do

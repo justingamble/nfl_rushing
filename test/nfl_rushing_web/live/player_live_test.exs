@@ -218,7 +218,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  test "Filtering by string that matches multipler players (case sensitive)", %{conn: conn} do
+  test "Filtering by substring that matches start of multipler player names (case sensitive)", %{conn: conn} do
     players =
       for player_num <- 1..(@default_page_size) do
         if (Integer.is_even(player_num)) do
@@ -240,7 +240,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, "#number-player-results", "#{expected_num_results}")
 
     for player <- players do
-      if player.player_name =~ ~r/Matched/ do
+      if player.player_name =~ ~r/Matched/i do
         assert has_element?(view, player_row(player))
       else
         refute has_element?(view, player_row(player))
@@ -248,7 +248,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  test "Filtering by string that matches multipler players (case insensitive)", %{conn: conn} do
+  test "Filtering by substring that matches start of multipler player names (case insensitive)", %{conn: conn} do
     players =
       for player_num <- 1..(@default_page_size) do
         if (Integer.is_even(player_num)) do
@@ -278,8 +278,37 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
+  test "Filtering by substring that matches middle of multipler player names (with spaces surrounding match word)", %{conn: conn} do
+    players =
+      for player_num <- 1..(@default_page_size) do
+        if (Integer.is_even(player_num)) do
+            create_test_player(%{player_name: "Matched Player #{player_num}"})
+        else
+            create_test_player(%{player_name: "Excluded Player #{player_num}"})
+        end
+      end
 
-  # Test filter with muliple matches (case insensitive)
+    {:ok, view, _html} = live(conn, "/players")
+
+    assert has_element?(view, "#number-player-results", "#{@default_page_size}")
+
+    view
+    |> form("#player-filter-form", %{player_name: " atched play "})
+    |> render_submit()
+
+    expected_num_results = Integer.floor_div(@default_page_size, 2)
+    assert has_element?(view, "#number-player-results", "#{expected_num_results}")
+
+    for player <- players do
+      if player.player_name =~ ~r/Matched/i do
+        assert has_element?(view, player_row(player))
+      else
+        refute has_element?(view, player_row(player))
+      end
+    end
+  end
+
+  # Test sorting on each column
   # Test drop-box with more than 5 selected
   # Maybe add a render_component test.
 

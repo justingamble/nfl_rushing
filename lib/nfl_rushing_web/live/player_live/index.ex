@@ -198,12 +198,12 @@ defmodule NflRushingWeb.PlayerLive.Index do
   end
 
   def count_results(player_filter) do
-    PlayerStats.count(player_name: player_filter)
+    PlayerStats.count(player_name: String.trim(player_filter))
   end
 
   def list_players(player_filter, sort_by, paginate_options) do
     PlayerStats.list_players(
-      player_name: player_filter,
+      player_name: String.trim(player_filter),
       sort_by: sort_by,
       paginate: paginate_options
     )

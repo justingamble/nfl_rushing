@@ -116,7 +116,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, player_row(player_1))
   end
 
-  test "insert more than a page of players; only see the page 2 players when right-arrow-pagination button pressed",
+  test "insert more than a page of players; only see the page-2 players when right-arrow-pagination button pressed",
        %{conn: conn} do
     players =
       for player_num <- 1..(@default_page_size + 1) do
@@ -134,6 +134,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
 
     view |> element("#pagination-right-arrow") |> render_click()
+    assert_patched(view, "/players?page=2&per_page=5")
 
     for player <- players do
       if player.player_name == "Player 6" do
@@ -162,9 +163,60 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
 
     view |> element("#pagination-number-2") |> render_click()
+    assert_patched(view, "/players?page=2&per_page=5")
 
     for player <- players do
       if player.player_name == "Player 6" do
+        assert has_element?(view, player_row(player))
+      else
+        refute has_element?(view, player_row(player))
+      end
+    end
+  end
+
+  # Test filter with muliple matches (case sensitive)
+  # Test filter with muliple matches (case insensitive)
+  # Test drop-box with more than 5 selected
+  # Maybe add a render_component test.
+
+  test "Filtering with no matches will not display any players", %{conn: conn} do
+    players =
+      for player_num <- 1..(@default_page_size + 1) do
+        create_test_player(%{player_name: "Player #{player_num}"})
+      end
+
+    {:ok, view, html} = live(conn, "/players")
+    assert has_element?(view, "#number-player-results", "#{@default_page_size + 1}")
+
+    view
+    |> form("#player-filter-form", %{player_name: "Non-existent-player"})
+    |> render_submit()
+
+    assert has_element?(view, "#number-player-results", "0")
+
+    for player <- players do
+      refute has_element?(view, player_row(player))
+    end
+    refute has_element?(view, "#player-table")
+  end
+
+  test "Filtering by exact player name will display the single player", %{conn: conn} do
+    players =
+      for player_num <- 1..(@default_page_size + 1) do
+        create_test_player(%{player_name: "Player #{player_num}"})
+      end
+
+    {:ok, view, html} = live(conn, "/players")
+    assert has_element?(view, "#number-player-results", "#{@default_page_size + 1}")
+
+    view
+    |> form("#player-filter-form", %{player_name: "Player 3"})
+    |> render_submit()
+
+    assert has_element?(view, "#number-player-results", "1")
+
+    for player <- players do
+      if player.player_name == "Player 3" do
         assert has_element?(view, player_row(player))
       else
         refute has_element?(view, player_row(player))

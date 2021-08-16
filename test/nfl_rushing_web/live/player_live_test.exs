@@ -173,7 +173,9 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  test "Filtering with no matches will show flash message, and not display any players", %{conn: conn} do
+  test "Filtering with no matches will show flash message, and not display any players", %{
+    conn: conn
+  } do
     players =
       for player_num <- 1..(@default_page_size + 1) do
         create_test_player(%{player_name: "Player #{player_num}"})
@@ -193,6 +195,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     for player <- players do
       refute has_element?(view, player_row(player))
     end
+
     refute has_element?(view, "#player-table")
   end
 
@@ -220,13 +223,15 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  test "Filtering by substring that matches start of multipler player names (case sensitive)", %{conn: conn} do
+  test "Filtering by substring that matches start of multipler player names (case sensitive)", %{
+    conn: conn
+  } do
     players =
-      for player_num <- 1..(@default_page_size) do
-        if (Integer.is_even(player_num)) do
-            create_test_player(%{player_name: "Matched Player #{player_num}"})
+      for player_num <- 1..@default_page_size do
+        if Integer.is_even(player_num) do
+          create_test_player(%{player_name: "Matched Player #{player_num}"})
         else
-            create_test_player(%{player_name: "Excluded Player #{player_num}"})
+          create_test_player(%{player_name: "Excluded Player #{player_num}"})
         end
       end
 
@@ -250,13 +255,14 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  test "Filtering by substring that matches start of multipler player names (case insensitive)", %{conn: conn} do
+  test "Filtering by substring that matches start of multipler player names (case insensitive)",
+       %{conn: conn} do
     players =
-      for player_num <- 1..(@default_page_size) do
-        if (Integer.is_even(player_num)) do
-            create_test_player(%{player_name: "MaTcHeD Player #{player_num}"})
+      for player_num <- 1..@default_page_size do
+        if Integer.is_even(player_num) do
+          create_test_player(%{player_name: "MaTcHeD Player #{player_num}"})
         else
-            create_test_player(%{player_name: "Excluded Player #{player_num}"})
+          create_test_player(%{player_name: "Excluded Player #{player_num}"})
         end
       end
 
@@ -280,13 +286,14 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  test "Filtering by substring that matches middle of multipler player names (with spaces surrounding match word)", %{conn: conn} do
+  test "Filtering by substring that matches middle of multipler player names (with spaces surrounding match word)",
+       %{conn: conn} do
     players =
-      for player_num <- 1..(@default_page_size) do
-        if (Integer.is_even(player_num)) do
-            create_test_player(%{player_name: "Matched Player #{player_num}"})
+      for player_num <- 1..@default_page_size do
+        if Integer.is_even(player_num) do
+          create_test_player(%{player_name: "Matched Player #{player_num}"})
         else
-            create_test_player(%{player_name: "Excluded Player #{player_num}"})
+          create_test_player(%{player_name: "Excluded Player #{player_num}"})
         end
       end
 
@@ -316,7 +323,6 @@ defmodule NflRushingWeb.PlayerLiveTest do
   # Test drop-box with more than 5 selected
   # Maybe add a render_component test.
 
-
   #  test "insert more than a page of players and see the first five players listed in query results table", %{conn: conn} do
   #    for player_num <- 1..(@default_page_size+1) do
   #      create_test_player(%{player_name: "Player #{player_num}", team_name: "T#{player_num}", total_rushing_yards: "#{player_num}",
@@ -343,8 +349,6 @@ defmodule NflRushingWeb.PlayerLiveTest do
   #
   #    assert has_element?(view, player_row(player_1))
   #  end
-
-
 
   #    view
   #    |> form("#playerfilter", %{player_name: ""})

@@ -107,6 +107,27 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, "#pagination-left-arrow")
   end
 
+  test "Change per-page setting of pagination", %{conn: conn} do
+    num_players = @default_page_size * 2
+
+    players =
+      for player_num <- 1..num_players do
+        create_test_player(%{player_name: "Player #{player_num}"})
+      end
+
+    {:ok, view, _html} = live(conn, "/players")
+
+    view
+    |> form("#per-page-dropbox", %{per_page_form: %{per_page: num_players}})
+    |> render_change()
+
+    assert_patched(view, player_path(%{page: 1, per_page: num_players}))
+
+    for player <- players do
+      assert has_element?(view, player_row(player))
+    end
+  end
+
   test "insert a single player and see the player listed in query results table", %{conn: conn} do
     player_1 = create_test_player(%{player_name: "Player #1"})
 
@@ -317,12 +338,27 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
   end
 
-  # TODO:
-  # Test sorting on each column
-  # Test sorting and filtering
-  # Test drop-box with more than 5 selected
-  # Maybe add a render_component test.
-  # Paginate live test, that tries beyond the last page.  Should show last page.
+  test "Sort by 'player name'",
+       %{conn: conn} do
+    {player1, player2, player3, player4} = create_four_test_players()
+
+    {:ok, view, _html} = live(conn, "/players")
+
+    view
+    |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :player_name}})
+    |> render_change()
+
+    assert has_element?(view, "#number-player-results", "4")
+
+    # Verify the order of the players is correct on the page
+    assert render(view) =~ players_in_order(player2, player3, player4, player1)
+
+    # Verify the correct table indexes are assigned to each player
+    assert has_element?(view, player_index(player2, 1))
+    assert has_element?(view, player_index(player3, 2))
+    assert has_element?(view, player_index(player4, 3))
+    assert has_element?(view, player_index(player1, 4))
+  end
 
   test "Sort by 'total rushing yards'",
        %{conn: conn} do
@@ -390,26 +426,39 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, player_index(player2, 4))
   end
 
-  test "Sort by 'player name'",
+  # combination tested: player-name, 'not4'
+  test "Sort by 'total rushing touchdowns, then filter on 'not3', then filter on 'not4', then sort by 'player_name'",
        %{conn: conn} do
     {player1, player2, player3, player4} = create_four_test_players()
 
     {:ok, view, _html} = live(conn, "/players")
 
     view
+    |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :total_rushing_touchdowns}})
+    |> render_change()
+
+    view
+    |> form("#player-filter-form", %{player_name: "not3"})
+    |> render_submit()
+
+    view
+    |> form("#player-filter-form", %{player_name: "not4"})
+    |> render_submit()
+
+    view
     |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :player_name}})
     |> render_change()
 
-    assert has_element?(view, "#number-player-results", "4")
+    assert has_element?(view, "#number-player-results", "3")
 
     # Verify the order of the players is correct on the page
-    assert render(view) =~ players_in_order(player2, player3, player4, player1)
+    assert render(view) =~ players_in_order(player2, player3, player1)
 
     # Verify the correct table indexes are assigned to each player
     assert has_element?(view, player_index(player2, 1))
     assert has_element?(view, player_index(player3, 2))
-    assert has_element?(view, player_index(player4, 3))
-    assert has_element?(view, player_index(player1, 4))
+    assert has_element?(view, player_index(player1, 3))
+    refute has_element?(view, player_row(player4))
   end
 
   # combination tested: total_rushing_yards, 'not2'
@@ -495,41 +544,6 @@ defmodule NflRushingWeb.PlayerLiveTest do
     assert has_element?(view, player_index(player4, 2))
     assert has_element?(view, player_index(player2, 3))
     refute has_element?(view, player_row(player3))
-  end
-
-  # combination tested: player-name, 'not4'
-  test "Sort by 'total rushing touchdowns, then filter on 'not3', then filter on 'not4', then sort by 'player_name'",
-       %{conn: conn} do
-    {player1, player2, player3, player4} = create_four_test_players()
-
-    {:ok, view, _html} = live(conn, "/players")
-
-    view
-    |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :total_rushing_touchdowns}})
-    |> render_change()
-
-    view
-    |> form("#player-filter-form", %{player_name: "not3"})
-    |> render_submit()
-
-    view
-    |> form("#player-filter-form", %{player_name: "not4"})
-    |> render_submit()
-
-    view
-    |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :player_name}})
-    |> render_change()
-
-    assert has_element?(view, "#number-player-results", "3")
-
-    # Verify the order of the players is correct on the page
-    assert render(view) =~ players_in_order(player2, player3, player1)
-
-    # Verify the correct table indexes are assigned to each player
-    assert has_element?(view, player_index(player2, 1))
-    assert has_element?(view, player_index(player3, 2))
-    assert has_element?(view, player_index(player1, 3))
-    refute has_element?(view, player_row(player4))
   end
 
   defp players_in_order(first, second, third) do

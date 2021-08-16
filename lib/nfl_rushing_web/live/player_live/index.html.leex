@@ -51,9 +51,9 @@
       <div>
         <!-- Results per page dropbox -->
         <%= if max_page > 1 do %>
-          <%= f = form_for :per_page_form, "#", phx_change: "per-page-selected", class: "form-per-page" %>
+          <%= f = form_for :per_page_form, "#", phx_change: "per-page-selected", class: "form-per-page", id: "per-page-dropbox" %>
                 Show
-                <%= select(f, :per_page, @per_page_choices, selected: @paginate_options.per_page, id: "per-page-dropbox", class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
+                <%= select(f, :per_page, @per_page_choices, selected: @paginate_options.per_page, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
                 per page
           </form>
         <% end %>

@@ -104,9 +104,9 @@
     <div class="flex flex-row">
       <!-- User-specifies the sort-by column via dropbox -->
       <div class="w-1/2">
-        <%= f = form_for :sort_by_form, "#", phx_change: "sort-selected", class: "form-sort-by object-right" %>
+        <%= f = form_for :sort_by_form, "#", phx_change: "sort-selected", class: "form-sort-by object-right", id: "sort-by-dropbox" %>
             <%= label(f, :sort_by) %>
-            <%= select(f, :sort_by, @sort_by_choices, selected: @sort_by, id: "sort-by-dropbox", class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
+            <%= select(f, :sort_by, @sort_by_choices, selected: @sort_by, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
         </form>
       </div>
 

@@ -162,10 +162,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
 
     view |> element("#pagination-number-2") |> render_click()
-
-    new_page = 2
-    per_page = 5
-    assert_patched(view, player_path(new_page, per_page))
+    assert_patched(view, player_path(%{page: 2, per_page: 5}))
 
     for player <- players do
       if player.player_name == "Player 6" do
@@ -427,7 +424,7 @@ defmodule NflRushingWeb.PlayerLiveTest do
   #    IO.puts("Page list is.... [[#{inspect render(page_live), infinite: true}]]")
   #    IO.puts("Disconnected_html is.... [[#{inspect disconnected_html}]]")
 
-  defp player_path(page_number, per_page) do
+  defp player_path(%{page: page_number, per_page: per_page}) do
     "/players?" <> "page=#{page_number}&per_page=#{per_page}"
   end
 

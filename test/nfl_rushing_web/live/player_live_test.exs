@@ -162,7 +162,10 @@ defmodule NflRushingWeb.PlayerLiveTest do
     end
 
     view |> element("#pagination-number-2") |> render_click()
-    assert_patched(view, "/players?page=2&per_page=5")
+
+    new_page = 2
+    per_page = 5
+    assert_patched(view, player_path(new_page, per_page))
 
     for player <- players do
       if player.player_name == "Player 6" do
@@ -323,6 +326,49 @@ defmodule NflRushingWeb.PlayerLiveTest do
   # Test drop-box with more than 5 selected
   # Maybe add a render_component test.
 
+  test "Sorting on the total rushing yards column",
+       %{conn: conn} do
+    num_players = @default_page_size * 2
+
+    players =
+      for player_num <- 1..num_players do
+        create_test_player(%{
+          player_name: "Player #{player_num}",
+          total_rushing_yards: 100 - player_num,
+          longest_rush: "#{player_num}",
+          total_rushing_touchdowns: "#{player_num}"
+        })
+      end
+
+    {:ok, view, _html} = live(conn, "/players")
+
+    assert has_element?(view, "#number-player-results", "#{num_players}")
+
+    view
+    |> form("#player-filter-form", %{sort_by: :total_rushing_yards})
+    |> render_submit()
+
+    view
+    |> form("#player-filter-form", %{sort_by: :total_rushing_yards})
+    |> render_submit()
+
+    assert has_element?(view, "#number-player-results", "#{num_players}")
+
+    # The total_rushing_yards is counting downwards, as they were created.
+    # By inversing the player list, that should be the order that the players are presented.
+    index = 1
+
+    for player <- Enum.reverse(players) do
+      assert has_element?(view, player_index(player, index))
+
+      if index == @default_page_size do
+        view |> element("#pagination-right-arrow") |> render_click()
+      end
+
+      index = index + 1
+    end
+  end
+
   #  test "insert more than a page of players and see the first five players listed in query results table", %{conn: conn} do
   #    for player_num <- 1..(@default_page_size+1) do
   #      create_test_player(%{player_name: "Player #{player_num}", team_name: "T#{player_num}", total_rushing_yards: "#{player_num}",
@@ -381,7 +427,13 @@ defmodule NflRushingWeb.PlayerLiveTest do
   #    IO.puts("Page list is.... [[#{inspect render(page_live), infinite: true}]]")
   #    IO.puts("Disconnected_html is.... [[#{inspect disconnected_html}]]")
 
+  defp player_path(page_number, per_page) do
+    "/players?" <> "page=#{page_number}&per_page=#{per_page}"
+  end
+
   defp player_row(player), do: "#player-#{player.id}"
+
+  defp player_index(player, index), do: "#player-#{player.id}-index-#{index}"
 
   def create_test_player(attrs) do
     {:ok, player} =

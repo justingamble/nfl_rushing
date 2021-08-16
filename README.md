@@ -54,4 +54,57 @@ We will evaluate you on your ability to solve the problem defined in the require
 If you have any questions regarding requirements, do not hesitate to email your contact at theScore for clarification.
 
 ### Installation and running this solution
-... TODO
+
+#### Technology versions
+    *. This Liveview application was implemented and tested using Elixir 1.11.3 (compiled with Erlang/OTP 23).  
+    *. Browser testing was done with Google Chrome.
+    *. This application loads data into a PostgreSQL database, and queries from it.
+
+#### Installation
+1. Install PostgreSQL from https://www.postgresql.org/download
+2. Install version 1.11.3 of Elixir (preferably compiled with Erlang/OTP 23)
+    1. If you are using asdf to manage Elixir versions, these commands can be used:
+
+3. Download this challenge code from https://github.com/justingamble/nfl_rushing
+    1. Recommended: git clone git@github.com:justingamble/nfl_rushing.git
+    2. Alternatively, can download code as a zip file and then unzip the file inside a new directory.
+4. Change directory to the 'nfl_rushing' code directory.
+    1. cd nfl_rushing
+5. If you are using asdf to manage Elixir versions, inside this directory ensure that Elixir 1.11.3 is being used:
+    1. 
+6. Run:
+      mix setup
+      mix do deps.get, compile
+   to download the dependencies and compile the app.  You may see some warning messages, these can be ignored.
+7. In your favourite editor, open 'config/config.exs' and look at the
+   section starting with:
+      config :music_db, MusicDB.Repo
+
+   These are the settings that the app will use to connect to your database,
+   so double-check them to make sure they'll work.  In particular, make sure
+   the username and password are correct.
+8. In your terminal, run:
+      mix ecto.setup
+
+   You should see output like this:
+      Sample data successfully loaded.
+
+   You can test by opening mix and running one line of code.
+      iex -S mix
+      MusicDB.Repo.aggregate("artists", :count, :id)
+
+   (the response should be a single integer)
+
+#### Running the automated tests
+
+   mix test
+
+#### Running the application
+  
+   mix phx.server
+
+#### To reset the data:
+   mix ecto.reset
+
+### Limitations: 
+- sorting by T (T is simply ignored)

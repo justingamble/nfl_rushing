@@ -3,8 +3,11 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   alias NflRushing.PlayerStats
   alias NflRushing.PlayerStats.Player
+  alias NflRushingWeb.Endpoint
 
   require Integer
+
+  @download_results_topic "download_results"
 
   @impl true
   def mount(params, _session, socket) do
@@ -12,6 +15,10 @@ defmodule NflRushingWeb.PlayerLive.Index do
     IO.puts("______________ mount: setting loading to FALSE \n")
 
     paginate_options = set_pagination_from(params)
+
+    if connected?(socket) do
+      Endpoint.subscribe(@download_results_topic)
+    end
 
     socket =
       assign(socket,
@@ -25,7 +32,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
         paginate_options: paginate_options
       )
 
-    {:ok, socket, temporary_assigns: [players: []]}
+    {:ok, socket}
   end
 
   @impl true
@@ -174,6 +181,43 @@ defmodule NflRushingWeb.PlayerLive.Index do
     players = list_players(player_filter, sort_by, paginate_options)
 
     {:noreply, assign(socket, :players, players)}
+  end
+
+  @impl true
+  def handle_info(
+        %{event: "players_downloaded"},
+        %{
+          assigns: %{
+            player_filter: player_filter,
+            sort_by: sort_by,
+            paginate_options: paginate_options
+          }
+        } = socket
+      ) do
+
+    %{page: page, per_page: per_page} = paginate_options
+
+    socket =
+      socket
+      |> clear_flash()
+      |> put_flash(:info, "Players data downloaded successfully")
+      |> assign(
+        player_filter: player_filter,
+        loading: false,
+        sort_by: sort_by,
+        paginate_options: paginate_options
+      )
+      |> push_patch(
+        to:
+          Routes.live_path(
+            socket,
+            __MODULE__,
+            page: page,
+            per_page: per_page
+          )
+      )
+
+    {:noreply, socket}
   end
 
   @impl true

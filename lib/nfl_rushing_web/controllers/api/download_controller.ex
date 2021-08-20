@@ -2,6 +2,9 @@ defmodule NflRushingWeb.Api.DownloadController do
   use NflRushingWeb, :controller
   use Task
 
+  alias NflRushingWeb.Endpoint
+
+  @download_results_topic "download_results"
   @filename "NflRushing.Player.Download.csv"
 
   def start_link(arg) do
@@ -43,6 +46,8 @@ defmodule NflRushingWeb.Api.DownloadController do
           end)
         end
       )
+
+    Endpoint.broadcast(@download_results_topic, "players_downloaded", %{})
 
     conn
     |> halt

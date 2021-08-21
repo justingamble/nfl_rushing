@@ -102,12 +102,14 @@ If you have any questions regarding requirements, do not hesitate to email your 
    These are the settings that the app will use to connect to your database,
    so double-check them to make sure they'll work.  In particular, make sure
    the username and password are correct.
+
 7. In your terminal, run:
 ```elixir
       mix ecto.setup
 ```
    You should see output like this:
       `Sample data successfully loaded.`
+
 8. Test your configuration by opening mix and running one line of code. The response should be a single integer: 326.
 ```elixir
       iex -S mix

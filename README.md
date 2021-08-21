@@ -98,9 +98,9 @@ If you have any questions regarding requirements, do not hesitate to email your 
 #### Screenshots
 
 Try 1:
-![PlayerData](Playername.sort.png)
+![PlayerData](assets/static/images/Playername.sort.png)
 
-![PlayerDownload](images/PlayerData.downloaded.png)
+![PlayerDownload](assets/static/images/PlayerData.downloaded.png)
 
 Try 2:
 ![PlayerData](priv/static/Playername.sort.png)

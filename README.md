@@ -100,7 +100,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
 Try 1:
 ![PlayerData](Playername.sort.png)
 
-![PlayerDownload](PlayerData.downloaded.png)
+![PlayerDownload](images/PlayerData.downloaded.png)
 
 Try 2:
 ![PlayerData](priv/static/Playername.sort.png)

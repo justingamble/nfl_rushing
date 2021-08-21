@@ -3,7 +3,7 @@ use Mix.Config
 # Configure your database
 config :nfl_rushing, NflRushing.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "REPLACE THIS CONTENT IN DOUBLE QUOTES WITH 'postgres' PASSWORD",
   database: "nfl_rushing_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,

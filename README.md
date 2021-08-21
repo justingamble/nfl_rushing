@@ -62,23 +62,30 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 #### Installation
 1. Install PostgreSQL from https://www.postgresql.org/download
-2. Install version 1.11.3 of Elixir (preferably compiled with Erlang/OTP 23)
-    1. If you are using asdf to manage Elixir versions, these commands can be used:
-
-3. Download this challenge code from https://github.com/justingamble/nfl_rushing
+2. Download this challenge code from https://github.com/justingamble/nfl_rushing
     1. Recommended: git clone git@github.com:justingamble/nfl_rushing.git
-    2. Alternatively, can download code as a zip file and then unzip the file inside a new directory.
-4. Change directory to the 'nfl_rushing' code directory.
+    2. Alternatively, download code as a zip file and then unzip the file inside a new directory.
+3. Change directory to the 'nfl_rushing' code directory.
     1. cd nfl_rushing
-5. If you are using asdf to manage Elixir versions, inside this directory ensure that Elixir 1.11.3 is being used:
-    1. 
+4. Install version 1.11.3 of Elixir (preferably compiled with Erlang/OTP 23)
+    1. If you are using asdf to manage Elixir versions, these commands can be executed inside the 'nfl_rushing' directory:
+        /* Ensure asdf plugins are up-to-date */
+        asdf plugin-add erlang
+        asdf plugin-add elixir
+        asdf plugin-update erlang
+        asdf plugin-update elixir
+        /* Install erlang, and set it as the version to use in this directory */
+        asdf install erlang 23.3.4.2
+        asdf local erlang 23.3.4.2 
+        /* Install elixir, and set it as the version to use in this directory */
+        asdf install elixir 1.11.3-otp-23
+        asdf local elixir 1.11.3-otp-23
 6. Run:
       mix setup
       mix do deps.get, compile
    to download the dependencies and compile the app.  You may see some warning messages, these can be ignored.
-7. In your favourite editor, open 'config/config.exs' and look at the
-   section starting with:
-      config :music_db, MusicDB.Repo
+7. In your favourite editor, open 'config/dev.exs' and look at the section starting with:
+      config :nfl_rushing, NflRushing.Repo
 
    These are the settings that the app will use to connect to your database,
    so double-check them to make sure they'll work.  In particular, make sure
@@ -91,16 +98,16 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
    You can test by opening mix and running one line of code.
       iex -S mix
-      MusicDB.Repo.aggregate("artists", :count, :id)
+      NflRushing.PlayerStats.count([])
 
-   (the response should be a single integer)
+   (the response should be a single integer, which at time of this writing is: 326)
 
 #### Screenshots
 
 User interface:
 ![PlayerData](assets/static/images/Playername.sort.png)
 
-After pressing the download button:
+After pressing the "Download players" button:
 ![PlayerDownload](assets/static/images/PlayerData.downloaded.png)
 
 #### Running the automated tests

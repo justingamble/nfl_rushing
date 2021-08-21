@@ -68,12 +68,12 @@ If you have any questions regarding requirements, do not hesitate to email your 
 2. Download Justin's application code from https://github.com/justingamble/nfl_rushing
     1. Recommended: `git clone git@github.com:justingamble/nfl_rushing.git`
     2. Alternatively, download code as a zip file and then unzip the file inside a new directory
-3. Change directory to the `nfl_rushing` code directory.
+3. Change to the `nfl_rushing` code directory.
 ```bash
         cd nfl_rushing
 ```
 4. Install version 1.11.3 of Elixir (preferably compiled with Erlang/OTP 23)
-    1. If you are using asdf to manage Elixir versions, these commands can be executed inside the `nfl_rushing` directory:
+    1. If you are using [asdf](https://github.com/asdf-vm/asdf) to manage Elixir versions, these commands can be executed inside the `nfl_rushing` directory:
 ```bash
         # Ensure asdf plugins are up-to-date 
         asdf plugin-add elixir
@@ -88,14 +88,14 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf install elixir 1.11.3-otp-23
         asdf local elixir 1.11.3-otp-23
 ```
-6. Download the dependencies and compile the application.  Run:
+5. Download the dependencies and compile the application.  Run:
 ```bash
         mix setup
         mix do deps.get, compile
 ```
-   You may see some warning messages, these can be ignored.
-7. In your favourite editor, open 'config/dev.exs' and look at the section starting with:
-      config :nfl_rushing, NflRushing.Repo
+You may see some warning messages, these can be ignored.
+6. In your favourite editor, open 'config/dev.exs' and look at the section starting with:
+      `config :nfl_rushing, NflRushing.Repo`
 
    These are the settings that the app will use to connect to your database,
    so double-check them to make sure they'll work.  In particular, make sure

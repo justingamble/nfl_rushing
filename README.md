@@ -76,6 +76,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
     1. If you are using [asdf](https://github.com/asdf-vm/asdf) to manage Elixir versions, these commands can be executed inside the `nfl_rushing` directory:
 ```bash
         # Ensure asdf plugins are up-to-date 
+        asdf plugin-add erlang
         asdf plugin-add elixir
         asdf plugin-update erlang
         asdf plugin-update elixir
@@ -88,27 +89,32 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf install elixir 1.11.3-otp-23
         asdf local elixir 1.11.3-otp-23
 ```
-5. Download the dependencies and compile the application.  Run:
+5. Download the dependencies and compile the application. You may see some warning messages, these can be ignored. Inside the `nfl_rushing` directory, run:
 ```bash
         mix setup
         mix do deps.get, compile
 ```
-You may see some warning messages, these can be ignored.
 6. In your favourite editor, open 'config/dev.exs' and look at the section starting with:
       `config :nfl_rushing, NflRushing.Repo`
 
    These are the settings that the app will use to connect to your database,
    so double-check them to make sure they'll work.  In particular, make sure
    the username and password are correct.
-8. In your terminal, run:
+7. In your terminal, run:
       mix ecto.setup
 
    You should see output like this:
       Sample data successfully loaded.
 
    You can test by opening mix and running one line of code.
+```bash
       iex -S mix
       NflRushing.PlayerStats.count([])
+```
+```elixir
+      iex -S mix
+      NflRushing.PlayerStats.count([])
+```
 
    (the response should be a single integer, which at time of this writing is: 326)
 

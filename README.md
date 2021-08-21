@@ -56,11 +56,12 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ### Installation and running this solution
 
 #### Technology versions
-   *. This Liveview application was implemented and tested using Elixir 1.11.3 (compiled with Erlang/OTP 23).  
-   *. Browser testing was done with Google Chrome.
-   *. This application loads data into a PostgreSQL database, and queries from it.
+- This Liveview application was implemented and tested using Elixir 1.11.3 (compiled with Erlang/OTP 23).  
+- Browser testing was done with Google Chrome.
+- This application loads data into a PostgreSQL database, and queries from it.
 
 #### Installation
+
 1. Install PostgreSQL from https://www.postgresql.org/download
 2. Download this challenge code from https://github.com/justingamble/nfl_rushing
     1. Recommended: git clone git@github.com:justingamble/nfl_rushing.git
@@ -119,6 +120,7 @@ After pressing the "Download players" button:
    mix phx.server
 
 #### To reset the data:
+
    mix ecto.reset
 
 ### Limitations: 

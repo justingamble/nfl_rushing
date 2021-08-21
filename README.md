@@ -90,10 +90,6 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf local elixir 1.11.3-otp-23
 ```
 5. Download the dependencies and compile the application. You may see some warning messages, these can be ignored. Inside the `nfl_rushing` directory, run:
-```bash
-        mix setup
-        mix do deps.get, compile
-```
 ```elixir
         mix setup
         mix do deps.get, compile
@@ -110,21 +106,15 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ```elixir
       mix ecto.setup
 ```
-
    You should see output like this:
       `Sample data successfully loaded.`
-
-   You can test by opening mix and running one line of code.
-```bash
-      iex -S mix
-      NflRushing.PlayerStats.count([])
-```
+8. Test your configuration by opening mix and running one line of code. The response should be a single integer: 326.
 ```elixir
       iex -S mix
-      NflRushing.PlayerStats.count([])
+      iex(1)> NflRushing.PlayerStats.count([])
 ```
 
-   (the response should be a single integer, which at time of this writing is: 326)
+
 
 #### Screenshots
 

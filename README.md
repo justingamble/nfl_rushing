@@ -95,6 +95,17 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
    (the response should be a single integer)
 
+#### Screenshots
+
+Try 1:
+![PlayerData](Playername.sort.png)
+
+![PlayerDownload](PlayerData.downloaded.png)
+
+Try 2:
+![PlayerData](priv/static/Playername.sort.png)
+
+
 #### Running the automated tests
 
    mix test

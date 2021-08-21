@@ -56,7 +56,9 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ### Installation and running this solution
 
 #### Technology versions
-- This Liveview application was implemented and tested using Elixir 1.11.3 (compiled with Erlang/OTP 23).  
+- Application was implemented and tested using Phoenix Liveview.  
+    - Elixir 1.11.3 (compiled with Erlang/OTP 23).  
+    - Erlang 23.2.4.2
 - Browser testing was done with Google Chrome.
 - This application loads data into a PostgreSQL database, and queries from it.
 

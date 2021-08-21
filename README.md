@@ -97,14 +97,11 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 #### Screenshots
 
-Try 1:
+User interface:
 ![PlayerData](assets/static/images/Playername.sort.png)
 
+After pressing the download button:
 ![PlayerDownload](assets/static/images/PlayerData.downloaded.png)
-
-Try 2:
-![PlayerData](priv/static/Playername.sort.png)
-
 
 #### Running the automated tests
 

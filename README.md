@@ -94,17 +94,25 @@ If you have any questions regarding requirements, do not hesitate to email your 
         mix setup
         mix do deps.get, compile
 ```
-6. In your favourite editor, open 'config/dev.exs' and look at the section starting with:
-      `config :nfl_rushing, NflRushing.Repo`
+```elixir
+        mix setup
+        mix do deps.get, compile
+```
 
+6. In your favourite editor, open 'config/dev.exs' and look at the section starting with:
+```elixir
+      config :nfl_rushing, NflRushing.Repo
+```
    These are the settings that the app will use to connect to your database,
    so double-check them to make sure they'll work.  In particular, make sure
    the username and password are correct.
 7. In your terminal, run:
+```elixir
       mix ecto.setup
+```
 
    You should see output like this:
-      Sample data successfully loaded.
+      `Sample data successfully loaded.`
 
    You can test by opening mix and running one line of code.
 ```bash

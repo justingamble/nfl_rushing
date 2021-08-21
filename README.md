@@ -56,8 +56,8 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ### Installation and running this solution
 
 #### Technology versions
-- Application was implemented and tested using Phoenix Liveview.  
-    - Elixir 1.11.3 (compiled with Erlang/OTP 23).  
+- Application was implemented and tested using Phoenix Liveview.
+    - Elixir 1.11.3 (compiled with Erlang/OTP 23)  
     - Erlang 23.2.4.2
 - Browser testing was done with Google Chrome.
 - This application loads data into a PostgreSQL database, and queries from it.
@@ -66,10 +66,10 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 1. Install PostgreSQL from https://www.postgresql.org/download
 2. Download this challenge code from https://github.com/justingamble/nfl_rushing
-    1. Recommended: git clone git@github.com:justingamble/nfl_rushing.git
+    1. Recommended: `git clone git@github.com:justingamble/nfl_rushing.git`
     2. Alternatively, download code as a zip file and then unzip the file inside a new directory.
 3. Change directory to the 'nfl_rushing' code directory.
-    1. cd nfl_rushing
+    1. `cd nfl_rushing`
 4. Install version 1.11.3 of Elixir (preferably compiled with Erlang/OTP 23)
     1. If you are using asdf to manage Elixir versions, these commands can be executed inside the 'nfl_rushing' directory:
         /* Ensure asdf plugins are up-to-date */

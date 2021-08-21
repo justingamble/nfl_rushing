@@ -65,16 +65,17 @@ If you have any questions regarding requirements, do not hesitate to email your 
 #### Installation
 
 1. Install PostgreSQL from https://www.postgresql.org/download
-2. Download this challenge code from https://github.com/justingamble/nfl_rushing
+2. Download Justin's application code from https://github.com/justingamble/nfl_rushing
     1. Recommended: `git clone git@github.com:justingamble/nfl_rushing.git`
-    2. Alternatively, download code as a zip file and then unzip the file inside a new directory.
+    2. Alternatively, download code as a zip file and then unzip the file inside a new directory
 3. Change directory to the 'nfl_rushing' code directory.
     1. `cd nfl_rushing`
 4. Install version 1.11.3 of Elixir (preferably compiled with Erlang/OTP 23)
     1. If you are using asdf to manage Elixir versions, these commands can be executed inside the 'nfl_rushing' directory:
-        `/* Ensure asdf plugins are up-to-date */`
-        `asdf plugin-add erlang`
-        `asdf plugin-add elixir`
+
+         /* Ensure asdf plugins are up-to-date */
+         asdf plugin-add elixir
+
         `asdf plugin-update erlang`
         `asdf plugin-update elixir`
         `/* Install erlang, and set it as the version to use in this directory */`
@@ -84,8 +85,8 @@ If you have any questions regarding requirements, do not hesitate to email your 
         `asdf install elixir 1.11.3-otp-23`
         `asdf local elixir 1.11.3-otp-23`
 6. Run:
-      mix setup
-      mix do deps.get, compile
+      `mix setup`
+      `mix do deps.get, compile`
    to download the dependencies and compile the app.  You may see some warning messages, these can be ignored.
 7. In your favourite editor, open 'config/dev.exs' and look at the section starting with:
       config :nfl_rushing, NflRushing.Repo

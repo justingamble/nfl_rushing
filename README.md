@@ -72,7 +72,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
     1. `cd nfl_rushing`
 4. Install version 1.11.3 of Elixir (preferably compiled with Erlang/OTP 23)
     1. If you are using asdf to manage Elixir versions, these commands can be executed inside the 'nfl_rushing' directory:
-
+```bash
          /* Ensure asdf plugins are up-to-date */
          asdf plugin-add elixir
 
@@ -84,6 +84,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
         `/* Install elixir, and set it as the version to use in this directory */`
         `asdf install elixir 1.11.3-otp-23`
         `asdf local elixir 1.11.3-otp-23`
+```
 6. Run:
       `mix setup`
       `mix do deps.get, compile`

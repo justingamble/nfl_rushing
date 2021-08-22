@@ -2,27 +2,6 @@ defmodule NflRushing.PlayerStats.Player do
   use Ecto.Schema
   import Ecto.Changeset
 
-  # columns_keyword_list: map field_names to their display text
-  @columns_keyword_list [
-    player_name: "Player",
-    team_name: "Team",
-    player_position: "Pos",
-    rushing_attempts_per_game_avg: "Att/G",
-    rushing_attempts: "Att",
-    total_rushing_yards: "Yds",
-    rushing_avg_yards_per_attempt: "Avg",
-    rushing_yards_per_game: "Yds/G",
-    total_rushing_touchdowns: "TD",
-    longest_rush: "Lng",
-    rushing_first_downs: "1st",
-    rushing_first_down_percentage: "1st%",
-    rushing_twenty_plus_yards_each: "20+",
-    rushing_forty_plus_yards_each: "40+",
-    rushing_fumbles: "FUM"
-  ]
-
-  @long_to_short_keys Map.new(@columns_keyword_list)
-
   schema "players" do
     field :player_name, :string
     field :team_name, :string
@@ -61,6 +40,27 @@ defmodule NflRushing.PlayerStats.Player do
     |> validate_number(:rushing_fumbles, greater_than_or_equal_to: 0)
   end
 
+  # columns_keyword_list: map field_names to their display text
+  @columns_keyword_list [
+    player_name: "Player",
+    team_name: "Team",
+    player_position: "Pos",
+    rushing_attempts_per_game_avg: "Att/G",
+    rushing_attempts: "Att",
+    total_rushing_yards: "Yds",
+    rushing_avg_yards_per_attempt: "Avg",
+    rushing_yards_per_game: "Yds/G",
+    total_rushing_touchdowns: "TD",
+    longest_rush: "Lng",
+    rushing_first_downs: "1st",
+    rushing_first_down_percentage: "1st%",
+    rushing_twenty_plus_yards_each: "20+",
+    rushing_forty_plus_yards_each: "40+",
+    rushing_fumbles: "FUM"
+  ]
+
+  @long_to_short_keys Map.new(@columns_keyword_list)
+
   def get_ordered_list_of_long_headers() do
     for {key, _value} <- @columns_keyword_list, do: key
   end
@@ -79,52 +79,4 @@ defmodule NflRushing.PlayerStats.Player do
     end
   end
 
-  # Sample format of this structure:
-  #
-  #     %NflRushing.PlayerStats.Player{
-  #      __meta__: #Ecto.Schema.Metadata<:loaded, "players">,
-  #      id: 1558,
-  #      inserted_at: ~N[2021-07-03 22:03:54],
-  #      longest_rush: "0",
-  #      player_name: "Joe Kerridge",
-  #      player_position: "RB",
-  #      rushing_attempts: 1,
-  #      rushing_attempts_per_game_avg: 0.1,
-  #      rushing_avg_yards_per_attempt: 0.0,
-  #      rushing_first_down_percentage: 0.0,
-  #      rushing_first_downs: 0,
-  #      rushing_forty_plus_yards_each: 0,
-  #      rushing_fumbles: 0,
-  #      rushing_twenty_plus_yards_each: 0,
-  #      rushing_yards_per_game: 0.0,
-  #      team_name: "GB",
-  #      total_rushing_touchdowns: 0,
-  #      total_rushing_yards: 0,
-  #      updated_at: ~N[2021-07-03 22:03:54]
-  #     }
-  #
-  # This function is used, for example, when writing out the database data to CSV file.
-  defimpl String.Chars, for: __MODULE__ do
-    def to_string(player) do
-      fields = [
-        player.player_name,
-        player.team_name,
-        player.player_position,
-        player.rushing_attempts_per_game_avg,
-        player.rushing_attempts,
-        player.total_rushing_yards,
-        player.rushing_avg_yards_per_attempt,
-        player.rushing_yards_per_game,
-        player.total_rushing_touchdowns,
-        player.longest_rush,
-        player.rushing_first_downs,
-        player.rushing_first_down_percentage,
-        player.rushing_twenty_plus_yards_each,
-        player.rushing_forty_plus_yards_each,
-        player.rushing_fumbles
-      ]
-
-      _string = "" <> Enum.join(fields, ",")
-    end
-  end
 end

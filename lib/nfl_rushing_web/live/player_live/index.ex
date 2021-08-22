@@ -194,13 +194,12 @@ defmodule NflRushingWeb.PlayerLive.Index do
           }
         } = socket
       ) do
-
     %{page: page, per_page: per_page} = paginate_options
 
     socket =
       socket
       |> clear_flash()
-      |> put_flash(:info, "Players data downloaded successfully")
+      |> put_flash(:info, "Player data downloaded successfully")
       |> assign(
         player_filter: player_filter,
         loading: false,

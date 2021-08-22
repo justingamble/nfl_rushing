@@ -130,13 +130,19 @@ Press Ctrl-C twice to exit the iex shell.
 8. (optional) Inside the `nfl_rushing` directory, verify all the automated tests pass:
 
 ```elixir
-   mix test
+   $ mix test
 ```
 
 9. (optional) Inside the `nfl_rushing` directory, review the test coverage:
 
 ```elixir
-   mix coveralls
+   $ MIX_ENV=test mix coveralls
+```
+
+Alternatively, to write an HTML version of the report to the `covers/` folder:
+
+```elixir
+   $ MIX_ENV=test mix coveralls.html
 ```
 
 10. Inside the `nfl_rushing` directory, launch the Phoenix server:

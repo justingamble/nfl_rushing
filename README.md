@@ -55,8 +55,6 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 ### Installation and running this solution
 
-#### Installation
-
 1. Install PostgreSQL from https://www.postgresql.org/download
 2. Download Justin's application code from https://github.com/justingamble/nfl_rushing
     1. Recommended: `git clone git@github.com:justingamble/nfl_rushing.git`
@@ -137,7 +135,12 @@ download was successful.
 
 #### To reset the data:
 
+This application does not modify the Player data.  However, if the player data in the database
+becomes corrupt, you can drop and recreate the database tables via:
+
+```elixir
    mix ecto.reset
+```
 
 ## Design Decisions
 

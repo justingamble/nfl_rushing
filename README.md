@@ -108,14 +108,9 @@ For example:
    This section contains the settings the application will use to connect to your database.
    Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
 
-8. Test your configuration by opening mix and running one line of code. The response should be the single integer 326.
-```elixir
-      iex -S mix
-      iex(1)> NflRushing.PlayerStats.count([])
-      [debug] QUERY OK source="players" db=1.4ms decode=1.9ms queue=1.2ms idle=1342.1ms
-      SELECT count(p0."id") FROM "players" AS p0 []
-      326
-```
+7. Test your configuration by opening mix and running one line of code: 
+   `NflRushing.PlayerStats.count([])`.
+   The response should be the single integer 326.
 ```elixir
         $ iex -S mix
         Erlang/OTP 23 [erts-11.2.2.2] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads:1] [hipe]
@@ -129,9 +124,7 @@ For example:
         326
         iex(2)>
 ```
-
-
-9. Verify all the automated tests pass.  Inside the `nfl_rushing` directory, run:
+8. Verify all the automated tests pass.  Inside the `nfl_rushing` directory, run:
 
 ```elixir
    mix test

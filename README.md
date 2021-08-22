@@ -108,7 +108,7 @@ For example:
    This section contains the settings the application will use to connect to your database.
    Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
 
-7. Test your configuration by opening mix and running one line of code: 
+7. Test your configuration by runnign `iex -S mix` and running one line of code: 
    `NflRushing.PlayerStats.count([])`.
    The response should be the single integer 326.
 ```elixir

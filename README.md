@@ -67,7 +67,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
 1. Install PostgreSQL from https://www.postgresql.org/download
 2. Download Justin's application code from https://github.com/justingamble/nfl_rushing
     1. Recommended: `git clone git@github.com:justingamble/nfl_rushing.git`
-    2. Alternatively, download code as a zip file and then unzip the file inside a new directory
+    2. Alternatively, download code as a zip file and then unzip the file inside a new directory.
 3. Change to the `nfl_rushing` code directory.
 ```bash
         cd nfl_rushing
@@ -89,19 +89,19 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf install elixir 1.11.3-otp-23
         asdf local elixir 1.11.3-otp-23
 ```
-5. Download the dependencies and compile the application. You may see some warning messages, these can be ignored. Inside the `nfl_rushing` directory, run:
+
+5. Run the following commands inside the `nfl_rushing` directory, to download the dependencies and compile the application. You may see some warning messages, these can be ignored.
 ```elixir
         mix setup
         mix do deps.get, compile
 ```
 
-6. In your favourite editor, open 'config/dev.exs' and look at the section starting with:
+6. In your favourite editor, open `config/dev.exs` and look at the section starting with:
 ```elixir
       config :nfl_rushing, NflRushing.Repo
 ```
-   These are the settings that the app will use to connect to your database,
-   so double-check them to make sure they'll work.  In particular, make sure
-   the username and password are correct.
+    This section contains the settings that the application will use to connect to your database.
+    Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
 
 7. In your terminal, run:
 ```elixir

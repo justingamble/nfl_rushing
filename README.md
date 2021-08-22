@@ -100,7 +100,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ```elixir
       config :nfl_rushing, NflRushing.Repo
 ```
-   This section contains the settings that the application will use to connect to your database.
+   This section contains the settings the application will use to connect to your database.
    Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
 
 7. In your terminal, run:
@@ -110,13 +110,28 @@ If you have any questions regarding requirements, do not hesitate to email your 
    You should see output like this:
       `Sample data successfully loaded.`
 
-8. Test your configuration by opening mix and running one line of code. The response should be a single integer: 326.
+8. Test your configuration by opening mix and running one line of code. The response should be a single integer.
 ```elixir
       iex -S mix
       iex(1)> NflRushing.PlayerStats.count([])
+      [debug] QUERY OK source="players" db=1.4ms decode=1.9ms queue=1.2ms idle=1342.1ms
+      SELECT count(p0."id") FROM "players" AS p0 []
+      326
 ```
 
+9. Verify all the automated tests pass.  Inside the `nfl_rushing` directory, run:
 
+```elixir
+   mix test
+```
+
+9. Inside the `nfl_rushing` directory, launch the Phoenix server:
+
+```elixir
+    mix phx.server
+```
+
+10. Point your web browser at http://localhost:4000/
 
 #### Screenshots
 
@@ -126,17 +141,26 @@ User interface:
 After pressing the "Download players" button:
 ![PlayerDownload](assets/static/images/PlayerData.downloaded.png)
 
-#### Running the automated tests
-
-   mix test
-
-#### Running the application
-  
-   mix phx.server
-
 #### To reset the data:
 
    mix ecto.reset
+
+## Design Decisions
+### File download
+- The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.
+- The file being downloaded is streamed from the database to the user. In particular, the data is not first written to
+a file on the web server. The advantage of this approach is there is no need to subsequently cleanup the temporary files.
+
+### Support for scalability for more players (i.e. 10K players0)
+- As mentioned in the File download section, the download functionality is implemented using streaming. 
+  As the data is queried from the database, it is uploaded to the user. The data is not all queried up-front, 
+  which means the download process should start right away - even for larger datasets.
+- When the user presses the filter button, or changes the sorting column, a "loading" icon is displayed. For larger
+  datasets this provides immediate feedback to the user.  For small datasets, like the sample 326 records, the 
+  loading icon disappears right away and is barely noticeable.
+
+### Implementation Notes
+- Some player records have a `LNG` field with an integer, others have an integer followed by 'T'.  Example: "29T".  When sorting on the LNG column, the application simply ignores the T, and sorts based on the numeric value.
 
 ### Limitations: 
 - sorting by T (T is simply ignored)

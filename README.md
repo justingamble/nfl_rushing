@@ -130,10 +130,10 @@ You should see:
 
 ![PlayerData](assets/static/images/start_screen.png)
 
-And if you press the "Download players" button, you should see flash message that indicates the file
+If you now press the "Download players" button, you should see flash message that indicates the file
 download was successful.
 
-![PlayerData](assets/static/images/download_message.png)
+![PlayerData](assets/static/images/download_message2.jpg)
 
 #### Screenshots
 

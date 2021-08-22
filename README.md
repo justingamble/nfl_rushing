@@ -135,14 +135,6 @@ download was successful.
 
 ![PlayerData](assets/static/images/download_message2.jpg)
 
-#### Screenshots
-
-User interface:
-![PlayerData](assets/static/images/Playername.sort.png)
-
-After pressing the "Download players" button:
-![PlayerDownload](assets/static/images/PlayerData.downloaded.png)
-
 #### To reset the data:
 
    mix ecto.reset

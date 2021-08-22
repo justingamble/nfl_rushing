@@ -127,10 +127,16 @@ For example:
 
 Press Ctrl-C twice to exit the iex shell.
 
-8. Inside the `nfl_rushing` directory, verify all the automated tests pass:
+8. (optional) Inside the `nfl_rushing` directory, verify all the automated tests pass:
 
 ```elixir
    mix test
+```
+
+9. (optional) Inside the `nfl_rushing` directory, review the test coverage:
+
+```elixir
+   mix coveralls
 ```
 
 10. Inside the `nfl_rushing` directory, launch the Phoenix server:

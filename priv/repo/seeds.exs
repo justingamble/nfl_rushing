@@ -43,8 +43,8 @@ error_map =
   Enum.reduce(players, %{}, fn player, acc_map ->
     {status, changeset} =
       player
-      |> Map.from_struct
-      |> PlayerStats.create_player
+      |> Map.from_struct()
+      |> PlayerStats.create_player()
 
     _acc_map =
       case status do

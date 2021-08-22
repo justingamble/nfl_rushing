@@ -186,13 +186,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
   @impl true
   def handle_info(
         %{event: "players_downloaded"},
-        %{
-          assigns: %{
-            player_filter: player_filter,
-            sort_by: sort_by,
-            paginate_options: paginate_options
-          }
-        } = socket
+        %{assigns: %{paginate_options: paginate_options}} = socket
       ) do
     %{page: page, per_page: per_page} = paginate_options
 
@@ -200,12 +194,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
       socket
       |> clear_flash()
       |> put_flash(:info, "Player data downloaded successfully")
-      |> assign(
-        player_filter: player_filter,
-        loading: false,
-        sort_by: sort_by,
-        paginate_options: paginate_options
-      )
       |> push_patch(
         to:
           Routes.live_path(

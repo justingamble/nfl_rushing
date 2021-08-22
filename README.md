@@ -55,13 +55,6 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 ### Installation and running this solution
 
-#### Overview
-- Application was implemented and tested using Phoenix Liveview.
-    - Elixir 1.11.3 (compiled with Erlang/OTP 23)  
-    - Erlang 23.2.4.2
-- Browser testing was done with Google Chrome.
-- This application loads data into a PostgreSQL database, and queries from it.
-
 #### Installation
 
 1. Install PostgreSQL from https://www.postgresql.org/download
@@ -133,6 +126,15 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 10. Point your web browser at http://localhost:4000/
 
+You should see:
+
+![PlayerData](assets/static/images/start_screen.png)
+
+And if you press the "Download players" button, you should see flash message that indicates the file
+download was successful.
+
+![PlayerData](assets/static/images/download_message.png)
+
 #### Screenshots
 
 User interface:
@@ -146,6 +148,14 @@ After pressing the "Download players" button:
    mix ecto.reset
 
 ## Design Decisions
+
+#### Overview
+- Application was implemented and tested using Phoenix Liveview.
+    - Elixir 1.11.3 (compiled with Erlang/OTP 23)  
+    - Erlang 23.2.4.2
+- Browser testing was done with Google Chrome.
+- This application loads data into a PostgreSQL database, and queries from it.
+
 ### File download
 - The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.
 - The file being downloaded is streamed from the database to the user. In particular, the data is not first written to

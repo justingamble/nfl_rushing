@@ -72,11 +72,11 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf plugin-update erlang
         asdf plugin-update elixir
 
-        # Install erlang, and set it as the version to use in this directory 
+        # Install erlang, and set it as the version to use while in this directory 
         asdf install erlang 23.3.4.2
         asdf local erlang 23.3.4.2
 
-        # Install elixir, and set it as the version to use in this directory
+        # Install elixir, and set it as the version to use while in this directory
         asdf install elixir 1.11.3-otp-23
         asdf local elixir 1.11.3-otp-23
 ```

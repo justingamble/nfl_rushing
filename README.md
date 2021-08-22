@@ -124,7 +124,10 @@ For example:
         326
         iex(2)>
 ```
-8. Verify all the automated tests pass.  Inside the `nfl_rushing` directory, run:
+
+Press Ctrl-C twice to exit the iex shell.
+
+8. Inside the `nfl_rushing` directory, verify all the automated tests pass:
 
 ```elixir
    mix test
@@ -136,7 +139,7 @@ For example:
     mix phx.server
 ```
 
-11. Point your web browser at http://localhost:4000/
+11. In your web browser, navigate to http://localhost:4000/
 
 You should see:
 

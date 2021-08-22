@@ -55,7 +55,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
 
 ### Installation and running this solution
 
-#### Technology versions
+#### Overview
 - Application was implemented and tested using Phoenix Liveview.
     - Elixir 1.11.3 (compiled with Erlang/OTP 23)  
     - Erlang 23.2.4.2
@@ -96,7 +96,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
         mix do deps.get, compile
 ```
 
-6. In your favourite editor, open `config/dev.exs` and look at the section starting with:
+6. In your favourite editor, open `config/dev.exs` and locate the section starting with:
 ```elixir
       config :nfl_rushing, NflRushing.Repo
 ```
@@ -151,7 +151,7 @@ After pressing the "Download players" button:
 - The file being downloaded is streamed from the database to the user. In particular, the data is not first written to
 a file on the web server. The advantage of this approach is there is no need to subsequently cleanup the temporary files.
 
-### Support for scalability for more players (i.e. 10K players0)
+### Scaling to support 10K players
 - As mentioned in the File download section, the download functionality is implemented using streaming. 
   As the data is queried from the database, it is uploaded to the user. The data is not all queried up-front, 
   which means the download process should start right away - even for larger datasets.

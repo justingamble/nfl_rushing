@@ -54,6 +54,7 @@ defmodule NflRushing.PlayerStats.Player do
     |> validate_length(:team_name, min: 2, max: 3)
     |> validate_length(:player_position, min: 1, max: 3)
     |> validate_number(:rushing_attempts, greater_than_or_equal_to: 0)
+    |> validate_number(:rushing_avg_yards_per_attempt, less_than_or_equal_to: 100)
     |> validate_format(:longest_rush, ~r/^-?[[:digit:]]+T?$/)
     |> validate_number(:rushing_first_down_percentage, greater_than_or_equal_to: 0)
     |> validate_number(:rushing_first_down_percentage, less_than_or_equal_to: 100)

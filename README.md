@@ -81,25 +81,36 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf local elixir 1.11.3-otp-23
 ```
 
-5. Run the following commands inside the `nfl_rushing` directory, to download the dependencies and compile the application. You may see some warning messages, these can be ignored.
+5. Run the following command inside the `nfl_rushing` directory, to configure 
+   the database.
 ```elixir
         mix setup
+```
+
+Part of the output includes a number of `INSERT INTO "players" ("longest_rush", ...)` statements.  After all of these INSERT statements you should see output
+like this:
+```
+    Data successfully loaded!
+```
+
+For example:
+
+![DataLoadedSuccessfully](assets/static/images/data.successfully.loaded.png)
+
+6. Run the following commands inside the `nfl_rushing` directory, to download
+   the dependencies and compile the application. You may see some warning
+   messages, these can be ignored.
+```elixir
         mix do deps.get, compile
 ```
 
-6. In your favourite editor, open `config/dev.exs` and locate the section starting with:
+7. In your favourite editor, open `config/dev.exs` and locate the section
+   starting with:
 ```elixir
       config :nfl_rushing, NflRushing.Repo
 ```
    This section contains the settings the application will use to connect to your database.
    Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
-
-7. In your terminal, run:
-```elixir
-      mix ecto.setup
-```
-   You should see output like this:
-      `Sample data successfully loaded.`
 
 8. Test your configuration by opening mix and running one line of code. The response should be a single integer.
 ```elixir
@@ -116,22 +127,22 @@ If you have any questions regarding requirements, do not hesitate to email your 
    mix test
 ```
 
-9. Inside the `nfl_rushing` directory, launch the Phoenix server:
+10. Inside the `nfl_rushing` directory, launch the Phoenix server:
 
 ```elixir
     mix phx.server
 ```
 
-10. Point your web browser at http://localhost:4000/
+11. Point your web browser at http://localhost:4000/
 
 You should see:
 
-![PlayerData](assets/static/images/start_screen.png)
+![StartScreen](assets/static/images/start_screen.png)
 
 If you now press the "Download players" button, you should see flash message that indicates the file
 download was successful.
 
-![PlayerData](assets/static/images/download_message2.jpg)
+![DownloadMessage](assets/static/images/download_message2.jpg)
 
 #### To reset the data:
 

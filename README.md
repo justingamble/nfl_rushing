@@ -100,8 +100,8 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ```elixir
       config :nfl_rushing, NflRushing.Repo
 ```
-    This section contains the settings that the application will use to connect to your database.
-    Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
+   This section contains the settings that the application will use to connect to your database.
+   Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
 
 7. In your terminal, run:
 ```elixir

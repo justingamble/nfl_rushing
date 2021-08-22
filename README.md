@@ -81,7 +81,15 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf local elixir 1.11.3-otp-23
 ```
 
-5. Run the following commands inside the `nfl_rushing` directory to 
+5. In your favourite editor, open `config/dev.exs` and locate the section
+   starting with:
+```elixir
+        config :nfl_rushing, NflRushing.Repo
+```
+   This section contains the settings the application will use to connect to your database.
+   Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
+
+6. Run the following commands inside the `nfl_rushing` directory to 
    download the dependencies, compile the application, and populate the
    data in the database.  You may see some warning messages, these can 
    be ignored.
@@ -99,14 +107,6 @@ like this:
 For example:
 
 ![DataLoadedSuccessfully](assets/static/images/data.successfully.loaded.png)
-
-6. In your favourite editor, open `config/dev.exs` and locate the section
-   starting with:
-```elixir
-        config :nfl_rushing, NflRushing.Repo
-```
-   This section contains the settings the application will use to connect to your database.
-   Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
 
 7. Test your configuration by running `iex -S mix` and running one line of code: 
    `NflRushing.PlayerStats.count([])`.

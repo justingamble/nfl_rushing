@@ -81,30 +81,26 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf local elixir 1.11.3-otp-23
 ```
 
-5. Run the following command inside the `nfl_rushing` directory, to configure 
-   the database.
+5. Run the following commands inside the `nfl_rushing` directory to 
+   download the dependencies, compile the application, and populate the
+   data in the database.  You may see some warning messages, these can 
+   be ignored.
 ```elixir
         mix setup
+        mix do deps.get, compile
 ```
 
 Part of the output includes a number of `INSERT INTO "players" ("longest_rush", ...)` statements.  After all of these INSERT statements you should see output
 like this:
 ```
-    Data successfully loaded!
+        Data successfully loaded!
 ```
 
 For example:
 
 ![DataLoadedSuccessfully](assets/static/images/data.successfully.loaded.png)
 
-6. Run the following commands inside the `nfl_rushing` directory, to download
-   the dependencies and compile the application. You may see some warning
-   messages, these can be ignored.
-```elixir
-        mix do deps.get, compile
-```
-
-7. In your favourite editor, open `config/dev.exs` and locate the section
+6. In your favourite editor, open `config/dev.exs` and locate the section
    starting with:
 ```elixir
       config :nfl_rushing, NflRushing.Repo

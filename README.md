@@ -81,7 +81,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
         asdf local elixir 1.11.3-otp-23
 ```
 
-5. In your favourite editor, open `config/dev.exs` and locate the section
+5. In your favourite editor, open `config/dev.exs` and `config/test.exs`.  For each file, locate the section
    starting with:
 ```elixir
         config :nfl_rushing, NflRushing.Repo

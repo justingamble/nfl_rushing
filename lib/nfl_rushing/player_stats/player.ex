@@ -78,5 +78,4 @@ defmodule NflRushing.PlayerStats.Player do
       {Map.fetch!(@long_to_short_keys, key), value}
     end
   end
-
 end

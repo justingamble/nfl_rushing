@@ -17,7 +17,8 @@ config :nfl_rushing, NflRushing.Repo,
 # with webpack to recompile .js and .css sources.
 config :nfl_rushing, NflRushingWeb.Endpoint,
   http: [port: 4000],
-  debug_errors: true,
+  # Change 'debug_errors' to true for default phoenix debugging on 404 pages
+  debug_errors: false,
   code_reloader: true,
   check_origin: false,
   watchers: [

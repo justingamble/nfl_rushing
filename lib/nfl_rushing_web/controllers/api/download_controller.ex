@@ -24,6 +24,18 @@ defmodule NflRushingWeb.Api.DownloadController do
 
     criteria = [player_name: player_filter, sort_by: String.to_atom(sort_by)]
 
+    case NflRushing.PlayerStats.count(criteria) do
+      0 -> respond_no_results(conn)
+      _ -> download_results(conn, criteria)
+    end
+  end
+
+  def respond_no_results(conn) do
+    conn
+    |> put_status(:not_found)
+  end
+
+  def download_results(conn, criteria) do
     conn =
       conn
       |> put_resp_content_type("text/csv")

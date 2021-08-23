@@ -18,8 +18,6 @@ defmodule NflRushingWeb.Api.DownloadControllerTest do
       |> put_req_header("content-type", "text/csv; charset=utf-8")
       |> get(@download_path, %{sort_by: :player_name, player_filter: player1.player_name})
 
-    # IO.puts("My response in this test is.... #{inspect response, infinite: true, pretty: true}")
-
     expected_csv = @file_header_row <> get_csv_row_for_player(player1)
 
     assert response.resp_body == expected_csv
@@ -36,8 +34,6 @@ defmodule NflRushingWeb.Api.DownloadControllerTest do
       |> put_req_header("content-type", "text/csv; charset=utf-8")
       |> get(@download_path, %{sort_by: :total_rushing_touchdowns, player_filter: "Player"})
 
-    IO.puts("My response in this test is.... #{inspect(response, infinite: true, pretty: true)}")
-
     expected_csv =
       @file_header_row <>
         get_csv_row_for_player(player2) <>
@@ -46,6 +42,26 @@ defmodule NflRushingWeb.Api.DownloadControllerTest do
         get_csv_row_for_player(player3)
 
     assert response.resp_body == expected_csv
+  end
+
+  # Expectation comes from:
+  # https://stackoverflow.com/questions/11746894/what-is-the-proper-rest-response-code-for-a-valid-request-but-an-empty-data
+  test "exception: if player filter does not resolve to a player, return status 404", %{
+    conn: conn
+  } do
+    _player1 = create_test_player(%{player_name: "Player Alfred", total_rushing_touchdowns: 50})
+    _player2 = create_test_player(%{player_name: "Player Bob", total_rushing_touchdowns: 40})
+
+    response =
+      conn
+      |> put_req_header("content-type", "text/csv; charset=utf-8")
+      |> get(@download_path, %{
+        sort_by: :total_rushing_touchdowns,
+        player_filter: "No Such Player"
+      })
+
+    assert response.status == 404
+    refute response.resp_body
   end
 
   def get_csv_row_for_player(player) do

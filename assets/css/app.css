@@ -13,11 +13,11 @@
 @import "./custom.css";
 
 @layer components {
-    .h1-red {
-      @apply text-red-500 text-5xl font-bold text-center;
-    }
+  .h1-red {
+    @apply text-red-500 text-5xl font-bold text-center;
+  }
 
-    .btn-indigo {
-      @apply bg-indigo-700 text-white font-bold py-2 px-4 rounded;
-    }
+  .btn-indigo {
+    @apply bg-indigo-700 text-white font-bold py-2 px-4 rounded;
+  }
 }

@@ -10,6 +10,7 @@ config :nfl_rushing, NflRushing.Repo,
   password: "postgres",
   database: "nfl_rushing_test#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: "localhost",
+  debug_errors: false,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,

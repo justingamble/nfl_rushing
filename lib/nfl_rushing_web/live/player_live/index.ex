@@ -176,7 +176,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
     player_filter = socket.assigns.player_filter
     sort_by = socket.assigns.sort_by
-    paginate_options = socket.assigns.options
+    paginate_options = socket.assigns.paginate_options
 
     players = list_players(player_filter, sort_by, paginate_options)
 

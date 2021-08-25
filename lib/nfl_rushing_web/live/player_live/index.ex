@@ -156,17 +156,15 @@ defmodule NflRushingWeb.PlayerLive.Index do
         loading: true,
         paginate_options: paginate_options
       )
-      |> push_patch(
-        to:
-          Routes.live_path(
-            socket,
-            __MODULE__,
-            page: page,
-            per_page: per_page
-          )
-      )
+      |> navigate_to_url(paginate_options)
 
     {:noreply, socket}
+  end
+
+  defp navigate_to_url(socket, %{page: page, per_page: per_page}) do
+    push_patch(socket,
+      to: Routes.live_path(socket, __MODULE__, page: page, per_page: per_page)
+    )
   end
 
   @impl true
@@ -188,21 +186,12 @@ defmodule NflRushingWeb.PlayerLive.Index do
         %{event: "players_downloaded"},
         %{assigns: %{paginate_options: paginate_options}} = socket
       ) do
-    %{page: page, per_page: per_page} = paginate_options
 
     socket =
       socket
       |> clear_flash()
       |> put_flash(:info, "Player data downloaded successfully")
-      |> push_patch(
-        to:
-          Routes.live_path(
-            socket,
-            __MODULE__,
-            page: page,
-            per_page: per_page
-          )
-      )
+      |> navigate_to_url(paginate_options)
 
     {:noreply, socket}
   end

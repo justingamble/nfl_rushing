@@ -42,7 +42,7 @@
   </div>
 <% end %>
 
-<% max_page = max_pagination_page(@player_num_results, @paginate_options.per_page) %>
+<% max_page = max_pagination_page(@player_num_results, @paginate.per_page) %>
 <%= unless (@player_num_results == 0) do %>
 <div id="player-table" class=" bg-gray-100 flex items-center justify-center font-sans ">
   <div class="w-5/6 rounded my-3">
@@ -53,7 +53,7 @@
         <%= if max_page > 1 do %>
           <%= f = form_for :per_page_form, "#", phx_change: "per-page-selected", class: "form-per-page", id: "per-page-dropbox" %>
                 Show
-                <%= select(f, :per_page, @per_page_choices, selected: @paginate_options.per_page, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
+                <%= select(f, :per_page, @per_page_choices, selected: @paginate.per_page, class: "border-2 p-2 border-green-600 hover:border-green-200 focus:outline-none") %>
                 per page
           </form>
         <% end %>
@@ -62,8 +62,8 @@
       <div>
         <!-- Pagination Links -->
         <div class="text-gray-400 flex justify-end space-x-3 select-none object-left items-center">
-          <%= if @paginate_options.page > 1 do %>
-            <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @paginate_options.page - 1, per_page: @paginate_options.per_page), id: "pagination-left-arrow" do %>
+          <%= if @paginate.page > 1 do %>
+            <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @paginate.page - 1, per_page: @paginate.per_page), id: "pagination-left-arrow" do %>
                 <button class="h-8 w-8 <%= pagination_styling() %> page-control" data-action="minus">
                   <svg fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd">
@@ -75,11 +75,11 @@
 
           <div class="space-x-2">
             <%= if max_page > 1 do %>
-              <% pagination_numbers = pagination_range(@player_num_results, @paginate_options.page, @paginate_options.per_page) %>
+              <% pagination_numbers = pagination_range(@player_num_results, @paginate.page, @paginate.per_page) %>
               <%= for i <- pagination_numbers, i > 0 do %>
                 <%= live_patch(i,
-                      to: Routes.live_path(@socket, __MODULE__, page: i, per_page: @paginate_options.per_page),
-                      class: maybe_selected_pagination_number(@paginate_options.page, i) <> " py-2 px-3 " <> pagination_styling(),
+                      to: Routes.live_path(@socket, __MODULE__, page: i, per_page: @paginate.per_page),
+                      class: maybe_selected_pagination_number(@paginate.page, i) <> " py-2 px-3 " <> pagination_styling(),
                       id: "pagination-number-#{i}"
                     )
                 %>
@@ -87,8 +87,8 @@
             <% end %>
           </div>
 
-          <%= if @paginate_options.page < max_page do %>
-            <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @paginate_options.page + 1, per_page: @paginate_options.per_page), id: "pagination-right-arrow" do %>
+          <%= if @paginate.page < max_page do %>
+            <%= live_patch to: Routes.live_path(@socket, __MODULE__, page: @paginate.page + 1, per_page: @paginate.per_page), id: "pagination-right-arrow" do %>
                 <button class="h-8 w-8 <%= pagination_styling() %> page-control" data-action="plus">
                   <svg fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd">
@@ -140,7 +140,7 @@
           </tr>
         </thead>
         <tbody id="players" class="text-gray-600 text-md font-light results-body">
-          <% start = ((@paginate_options.page - 1) * @paginate_options.per_page) + 1 %>
+          <% start = ((@paginate.page - 1) * @paginate.per_page) + 1 %>
           <%= for {player, index} <- Enum.with_index(@players, start) do %>
             <tr class="border-b border-gray-200 player-row <%= odd_or_even(index) %>" id="player-<%= player.id %>">
               <td id="player-<%= player.id %>-index-<%= index %>" class="py-3 px-3 text-center"><%= index %></td>

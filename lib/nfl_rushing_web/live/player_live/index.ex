@@ -14,7 +14,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
     IO.puts("------------------ index.ex: mount() ---------------\n")
     IO.puts("______________ mount: setting loading to FALSE \n")
 
-    paginate_options = set_pagination_from(params)
+    paginate = set_pagination_from(params)
 
     if connected?(socket) do
       Endpoint.subscribe(@download_results_topic)
@@ -29,7 +29,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
         sort_by_choices: sort_options(),
         sort_by: :player_name,
         per_page_choices: per_page_options(),
-        paginate_options: paginate_options
+        paginate: paginate
       )
 
     {:ok, socket}
@@ -39,19 +39,19 @@ defmodule NflRushingWeb.PlayerLive.Index do
   def handle_params(params, _url, socket) do
     IO.puts("------------------ index.ex: handle_params() entered ---------------\n")
 
-    paginate_options = set_pagination_from(params)
+    paginate = set_pagination_from(params)
 
     player_filter = socket.assigns.player_filter
     sort_by = socket.assigns.sort_by
 
-    players = list_players(player_filter, sort_by, paginate_options)
+    players = list_players(player_filter, sort_by, paginate)
     player_num_results = count_results(player_filter)
 
     socket =
       socket
       |> apply_action(socket.assigns.live_action, params)
       |> assign(
-        paginate_options: paginate_options,
+        paginate: paginate,
         players: players,
         player_num_results: player_num_results
       )
@@ -65,9 +65,9 @@ defmodule NflRushingWeb.PlayerLive.Index do
   def handle_event(
         "player-filter",
         %{"player_name" => player_filter},
-        %{assigns: %{sort_by: sort_column, paginate_options: paginate_options}} = socket
+        %{assigns: %{sort_by: sort_column, paginate: paginate}} = socket
       ) do
-    paginate_from_page_one = %{paginate_options | page: 1}
+    paginate_from_page_one = %{paginate | page: 1}
 
     IO.puts(
       "**** filter component's handle_event 'player-filter' -> received player: #{
@@ -92,7 +92,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
   def handle_event(
         "sort-selected",
         %{"sort_by_form" => %{"sort_by" => sort_by}},
-        %{assigns: %{player_filter: player_filter, paginate_options: paginate_options}} = socket
+        %{assigns: %{player_filter: player_filter, paginate: paginate}} = socket
       ) do
     IO.puts(
       "**** handle_event 'sort' -> received sort_column: '#{inspect(sort_by)}', and got player from socket: #{
@@ -109,7 +109,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
       |> assign_loading_and_trigger_filter_and_sort(
         player_filter,
         sort_column,
-        paginate_options
+        paginate
       )
 
     {:noreply, socket}
@@ -121,9 +121,8 @@ defmodule NflRushingWeb.PlayerLive.Index do
         %{"per_page_form" => %{"per_page" => per_page}},
         %{
           assigns: %{
-            player_filter: player_filter,
             player_num_results: player_num_results,
-            paginate_options: paginate_options
+            paginate: paginate
           }
         } = socket
       ) do
@@ -133,11 +132,11 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
     per_page = String.to_integer(per_page)
     max_pages = max_pagination_page(player_num_results, per_page)
-    page = min(paginate_options.page, max_pages)
+    page = min(paginate.page, max_pages)
 
-    paginate_options = %{page: page, per_page: per_page}
+    paginate = %{page: page, per_page: per_page}
 
-    {:noreply, socket |> navigate_to_url(paginate_options)}
+    {:noreply, socket |> navigate_to_url(paginate)}
   end
 
   @impl true
@@ -147,9 +146,9 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
     player_filter = socket.assigns.player_filter
     sort_by = socket.assigns.sort_by
-    paginate_options = socket.assigns.paginate_options
+    paginate = socket.assigns.paginate
 
-    players = list_players(player_filter, sort_by, paginate_options)
+    players = list_players(player_filter, sort_by, paginate)
 
     {:noreply, assign(socket, :players, players)}
   end
@@ -157,23 +156,23 @@ defmodule NflRushingWeb.PlayerLive.Index do
   @impl true
   def handle_info(
         %{event: "players_downloaded"},
-        %{assigns: %{paginate_options: paginate_options}} = socket
+        %{assigns: %{paginate: paginate}} = socket
       ) do
     socket =
       socket
       |> clear_flash()
       |> put_flash(:info, "Player data downloaded successfully")
-      |> navigate_to_url(paginate_options)
+      |> navigate_to_url(paginate)
 
     {:noreply, socket}
   end
 
   @impl true
-  def handle_info({:run_player_search, player_filter, sort_column, paginate_options}, socket)
+  def handle_info({:run_player_search, player_filter, sort_column, paginate}, socket)
       when is_atom(sort_column) do
     IO.puts("______________ run_player_search _______ setting loading to FALSE \n")
 
-    case list_players(player_filter, sort_column, paginate_options) do
+    case list_players(player_filter, sort_column, paginate) do
       [] ->
         socket =
           socket
@@ -193,9 +192,9 @@ defmodule NflRushingWeb.PlayerLive.Index do
          socket,
          player_filter,
          sort_by,
-         paginate_options
+         paginate
        ) do
-    send(self(), {:run_player_search, player_filter, sort_by, paginate_options})
+    send(self(), {:run_player_search, player_filter, sort_by, paginate})
 
     socket
     |> clear_flash()
@@ -205,7 +204,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
       loading: true,
       player_filter: player_filter,
       sort_by: sort_by,
-      paginate_options: paginate_options
+      paginate: paginate
     )
   end
 
@@ -219,11 +218,11 @@ defmodule NflRushingWeb.PlayerLive.Index do
     PlayerStats.count(player_name: String.trim(player_filter))
   end
 
-  def list_players(player_filter, sort_by, paginate_options) do
+  def list_players(player_filter, sort_by, paginate) do
     PlayerStats.list_players(
       player_name: String.trim(player_filter),
       sort_by: sort_by,
-      paginate: paginate_options
+      paginate: paginate
     )
   end
 

@@ -14,7 +14,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
     IO.puts("------------------ index.ex: mount() ---------------\n")
     IO.puts("______________ mount: setting loading to FALSE \n")
 
-    paginate = set_pagination_from(params)
+    paginate = get_paginate_from_params(params)
 
     if connected?(socket) do
       Endpoint.subscribe(@download_results_topic)
@@ -39,7 +39,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
   def handle_params(params, _url, socket) do
     IO.puts("------------------ index.ex: handle_params() entered ---------------\n")
 
-    paginate = set_pagination_from(params)
+    paginate = get_paginate_from_params(params)
 
     player_filter = socket.assigns.player_filter
     sort_by = socket.assigns.sort_by
@@ -131,10 +131,12 @@ defmodule NflRushingWeb.PlayerLive.Index do
     )
 
     per_page = String.to_integer(per_page)
-    max_pages = max_pagination_page(player_num_results, per_page)
-    page = min(paginate.page, max_pages)
 
-    paginate = %{page: page, per_page: per_page}
+    paginate =
+      get_paginate_when_per_page_changes(
+        %{page: paginate.page, per_page: per_page},
+        player_num_results
+      )
 
     {:noreply, socket |> navigate_to_url(paginate)}
   end
@@ -226,11 +228,17 @@ defmodule NflRushingWeb.PlayerLive.Index do
     )
   end
 
-  defp set_pagination_from(params) do
+  defp get_paginate_from_params(params) do
     page = String.to_integer(params["page"] || "1")
     per_page = String.to_integer(params["per_page"] || "5")
 
     %{page: page, per_page: per_page}
+  end
+
+  defp get_paginate_when_per_page_changes(%{page: page, per_page: per_page}, player_num_results)
+       when is_integer(per_page) do
+    max_pages = max_pagination_page(player_num_results, per_page)
+    %{page: min(page, max_pages), per_page: per_page}
   end
 
   defp sort_options() do

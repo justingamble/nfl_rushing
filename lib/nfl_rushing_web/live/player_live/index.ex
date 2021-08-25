@@ -37,7 +37,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
-    IO.puts("------------------ index.ex: handle_params() ---------------\n")
+    IO.puts("------------------ index.ex: handle_params() entered ---------------\n")
 
     paginate_options = set_pagination_from(params)
 
@@ -56,6 +56,8 @@ defmodule NflRushingWeb.PlayerLive.Index do
         player_num_results: player_num_results
       )
 
+    IO.puts("------------------ index.ex: handle_params() exited ---------------\n")
+
     {:noreply, socket}
   end
 
@@ -66,7 +68,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
         %{assigns: %{sort_by: sort_column, paginate_options: paginate_options}} = socket
       ) do
     paginate_from_page_one = %{paginate_options | page: 1}
-    send(self(), {:run_player_search, player_filter, sort_column, paginate_from_page_one})
 
     IO.puts(
       "**** filter component's handle_event 'player-filter' -> received player: #{
@@ -78,13 +79,10 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
     socket =
       socket
-      |> clear_flash()
-      |> assign(
-        players: [],
-        player_num_results: 0,
-        loading: true,
-        player_filter: player_filter,
-        paginate_options: paginate_from_page_one
+      |> assign_loading_and_trigger_filter_and_sort(
+        player_filter,
+        sort_column,
+        paginate_from_page_one
       )
 
     {:noreply, socket}
@@ -105,16 +103,13 @@ defmodule NflRushingWeb.PlayerLive.Index do
     )
 
     sort_column = String.to_atom(sort_by)
-    send(self(), {:run_player_search, player_filter, sort_column, paginate_options})
 
     socket =
       socket
-      |> clear_flash()
-      |> assign(
-        players: [],
-        player_num_results: 0,
-        loading: true,
-        sort_by: sort_column
+      |> assign_loading_and_trigger_filter_and_sort(
+        player_filter,
+        sort_column,
+        paginate_options
       )
 
     {:noreply, socket}
@@ -128,43 +123,21 @@ defmodule NflRushingWeb.PlayerLive.Index do
           assigns: %{
             player_filter: player_filter,
             player_num_results: player_num_results,
-            sort_by: sort_by,
             paginate_options: paginate_options
           }
         } = socket
       ) do
     IO.puts(
-      "**** handle_event 'per-page-selected' -> received per_page: '#{inspect(per_page)}', and got player from socket: #{
-        inspect(player_filter)
-      }
-      \n  ___________ #3 setting loading ot TRUE _______________\n"
+      "**** handle_event 'per-page-selected' -> received per_page: '#{inspect(per_page)}'\n"
     )
 
     per_page = String.to_integer(per_page)
     max_pages = max_pagination_page(player_num_results, per_page)
     page = min(paginate_options.page, max_pages)
 
-    paginate_options = %{paginate_options | page: page, per_page: per_page}
-    send(self(), {:run_player_search, player_filter, sort_by, paginate_options})
+    paginate_options = %{page: page, per_page: per_page}
 
-    socket =
-      socket
-      |> clear_flash()
-      |> assign(
-        players: [],
-        player_num_results: 0,
-        loading: true,
-        paginate_options: paginate_options
-      )
-      |> navigate_to_url(paginate_options)
-
-    {:noreply, socket}
-  end
-
-  defp navigate_to_url(socket, %{page: page, per_page: per_page}) do
-    push_patch(socket,
-      to: Routes.live_path(socket, __MODULE__, page: page, per_page: per_page)
-    )
+    {:noreply, socket |> navigate_to_url(paginate_options)}
   end
 
   @impl true
@@ -186,7 +159,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
         %{event: "players_downloaded"},
         %{assigns: %{paginate_options: paginate_options}} = socket
       ) do
-
     socket =
       socket
       |> clear_flash()
@@ -215,6 +187,32 @@ defmodule NflRushingWeb.PlayerLive.Index do
         socket = assign(socket, players: players, player_num_results: count, loading: false)
         {:noreply, socket}
     end
+  end
+
+  defp assign_loading_and_trigger_filter_and_sort(
+         socket,
+         player_filter,
+         sort_by,
+         paginate_options
+       ) do
+    send(self(), {:run_player_search, player_filter, sort_by, paginate_options})
+
+    socket
+    |> clear_flash()
+    |> assign(
+      players: [],
+      player_num_results: 0,
+      loading: true,
+      player_filter: player_filter,
+      sort_by: sort_by,
+      paginate_options: paginate_options
+    )
+  end
+
+  defp navigate_to_url(socket, %{page: page, per_page: per_page}) do
+    push_patch(socket,
+      to: Routes.live_path(socket, __MODULE__, page: page, per_page: per_page)
+    )
   end
 
   def count_results(player_filter) do

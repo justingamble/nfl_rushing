@@ -5,7 +5,15 @@ defmodule NflRushingWeb.PlayerLiveSortTest do
   require Integer
 
   import NflRushingWeb.PlayerLiveTestHelper,
-    only: [create_four_test_players: 0, create_test_player: 1, player_path: 1, player_row: 1, player_index: 2]
+    only: [
+      create_four_test_players: 0,
+      create_test_player: 1,
+      player_path: 1,
+      player_row: 1,
+      player_index: 2,
+      players_in_order: 3,
+      players_in_order: 4
+    ]
 
   @default_page_size 5
 
@@ -95,13 +103,5 @@ defmodule NflRushingWeb.PlayerLiveSortTest do
     assert has_element?(view, player_index(player3, 2))
     assert has_element?(view, player_index(player4, 3))
     assert has_element?(view, player_index(player2, 4))
-  end
-
-  defp players_in_order(first, second, third) do
-    ~r/#{first.player_name}.*#{second.player_name}.*#{third.player_name}/s
-  end
-
-  defp players_in_order(first, second, third, fourth) do
-    ~r/#{first.player_name}.*#{second.player_name}.*#{third.player_name}.*#{fourth.player_name}/s
   end
 end

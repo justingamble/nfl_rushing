@@ -7,6 +7,14 @@ defmodule NflRushingWeb.PlayerLiveTestHelper do
 
   def player_index(player, index), do: "#player-#{player.id}-index-#{index}"
 
+  def players_in_order(first, second, third) do
+    ~r/#{first.player_name}.*#{second.player_name}.*#{third.player_name}/s
+  end
+
+  def players_in_order(first, second, third, fourth) do
+    ~r/#{first.player_name}.*#{second.player_name}.*#{third.player_name}.*#{fourth.player_name}/s
+  end
+
   def create_four_test_players() do
     player1 =
       create_test_player(%{

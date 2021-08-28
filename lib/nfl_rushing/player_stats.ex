@@ -120,12 +120,14 @@ defmodule NflRushing.PlayerStats do
           # First we sort by the numeric value, then sort the rows with "T" to be after the "non-T" rows,
           # and finally sort by the player name.
           from a in query,
-            order_by: [asc: fragment("CAST(substring(?, '(-\\?[0-9]+)') AS integer)", a.longest_rush),
-                      asc: fragment("CASE (longest_rush LIKE '%T')
+            order_by: [
+              asc: fragment("CAST(substring(?, '(-\\?[0-9]+)') AS integer)", a.longest_rush),
+              asc: fragment("CASE (longest_rush LIKE '%T')
                                        WHEN false THEN 0
                                        WHEN true THEN 1
                                      END"),
-                      asc: a.player_name]
+              asc: a.player_name
+            ]
 
         {:sort_by, column}, query ->
           # The 'second_sort_by' guarantees an ordering, if the 'sort_by' field has the same value for different

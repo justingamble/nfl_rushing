@@ -130,7 +130,7 @@ defmodule NflRushingWeb.PlayerLiveFilterTest do
   end
 
   describe "Test 'Filter Players' button when mutiple players are matched (case-insensitive)" do
-    test "Filtering by substring that matches start of multiple player names (case insensitive)",
+    test "Filtering by substring that matches start of multiple player names",
          %{
            conn: conn
          } do

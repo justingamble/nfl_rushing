@@ -122,15 +122,16 @@ defmodule NflRushing.PlayerStats do
             order_by: fragment("cast(substring(?, '(-\\?[0-9]+)') as integer)", a.longest_rush)
 
         {:sort_by, column}, query ->
-          from a in query, order_by: [asc: ^column]
-          #      {:type, type}, query ->
-          #        from q in query, where: q.type == ^type
-          #
-          #      {:prices, [""]}, query ->
-          #        query
-          #
-          #      {:prices, prices}, query ->
-          #        from q in query, where: q.price in ^prices
+          # The 'second_sort_by' guarantees an ordering, if the 'sort_by' field has the same value for different
+          # records.  By using 'second_sort_by' we know that the downloaded file and the web display orderings
+          # will match.
+          second_sort_by =
+            case column do
+              :player_name -> :id
+              _ -> :player_name
+            end
+
+          from a in query, order_by: [asc: ^column, asc: ^second_sort_by]
       end)
 
     final_query

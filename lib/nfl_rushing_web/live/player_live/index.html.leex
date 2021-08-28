@@ -1,12 +1,11 @@
 
-<%= if @live_action in [:new, :edit] do %>
-  <%= live_modal @socket, NflRushingWeb.PlayerLive.FormComponent,
-    id: @player.id || :new,
-    title: @page_title,
-    action: @live_action,
-    player: @player,
-    return_to: Routes.player_index_path(@socket, :index) %>
-<% end %>
+Your parameters are:
+<ul>
+    <li>player filter: <%= @player_filter %></li>
+    <li>loading: <%= @loading %></li>
+    <li>sort_by: <%= @sort_by %>
+    <li>paginate: page=<%= @paginate.page %>, per_page=<%= @paginate.per_page %>
+</ul>
 
 <div class="mb-4 flex flex-col justify-between items-center">
   <form id="player-filter-form" phx-submit="player-filter" class="flex-wrap form-filter my-2">

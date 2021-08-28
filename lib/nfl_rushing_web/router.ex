@@ -25,11 +25,6 @@ defmodule NflRushingWeb.Router do
 
     get "/", PageController, :index
     live "/players", PlayerLive.Index
-    live "/players/new", PlayerLive.Index, :new
-    live "/players/:id/edit", PlayerLive.Index, :edit
-
-    live "/players/:id", PlayerLive.Show, :show
-    live "/players/:id/show/edit", PlayerLive.Show, :edit
   end
 
   # Enables LiveDashboard only for development

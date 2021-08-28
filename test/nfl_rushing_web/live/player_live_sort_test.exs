@@ -7,15 +7,9 @@ defmodule NflRushingWeb.PlayerLiveSortTest do
   import NflRushingWeb.PlayerLiveTestHelper,
     only: [
       create_four_test_players: 0,
-      create_test_player: 1,
-      player_path: 1,
-      player_row: 1,
       player_index: 2,
-      players_in_order: 3,
       players_in_order: 4
     ]
-
-  @default_page_size 5
 
   test "Sort by 'player name'",
        %{conn: conn} do

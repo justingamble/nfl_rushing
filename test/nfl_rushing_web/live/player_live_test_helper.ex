@@ -7,6 +7,42 @@ defmodule NflRushingWeb.PlayerLiveTestHelper do
 
   def player_index(player, index), do: "#player-#{player.id}-index-#{index}"
 
+  def create_four_test_players() do
+    player1 =
+      create_test_player(%{
+        player_name: "David not2 not3 not4 Duncan",
+        total_rushing_yards: 70,
+        longest_rush: "53",
+        total_rushing_touchdowns: 25
+      })
+
+    player2 =
+      create_test_player(%{
+        player_name: "Albert not1 not3 not4 Alfredson",
+        total_rushing_yards: 69,
+        longest_rush: "55T",
+        total_rushing_touchdowns: 75
+      })
+
+    player3 =
+      create_test_player(%{
+        player_name: "Bob not1 not2 not4 Bippo",
+        total_rushing_yards: 60,
+        longest_rush: "59",
+        total_rushing_touchdowns: 49
+      })
+
+    player4 =
+      create_test_player(%{
+        player_name: "Calvin not1 not2 not3 Cornelius",
+        total_rushing_yards: 65,
+        longest_rush: "50T",
+        total_rushing_touchdowns: 50
+      })
+
+    {player1, player2, player3, player4}
+  end
+
   def create_test_player(attrs) do
     {:ok, player} =
       attrs

@@ -29,5 +29,4 @@ defmodule NflRushingWeb.PlayerLivePerPageTest do
       assert has_element?(view, player_row(player))
     end
   end
-
 end

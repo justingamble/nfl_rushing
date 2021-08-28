@@ -59,7 +59,7 @@ defmodule NflRushingWeb.PlayerLiveFilterTest do
     end
   end
 
-  test "Filtering by substring that matches start of multipler player names (case sensitive)", %{
+  test "Filtering by substring that matches start of multiple player names (case sensitive)", %{
     conn: conn
   } do
     players =
@@ -91,7 +91,7 @@ defmodule NflRushingWeb.PlayerLiveFilterTest do
     end
   end
 
-  test "Filtering by substring that matches start of multipler player names (case insensitive)",
+  test "Filtering by substring that matches start of multiple player names (case insensitive)",
        %{conn: conn} do
     players =
       for player_num <- 1..@default_page_size do

@@ -10,7 +10,7 @@ defmodule NflRushingWeb.PlayerLiveFilterTest do
   @default_page_size 5
 
   describe "Test 'Filter Players' button when # of players exceeds what can fit on a pagination page" do
-    setup context = %{conn: conn} do
+    setup %{conn: conn} do
       players =
         for player_num <- 1..(@default_page_size + 1) do
           create_test_player(%{player_name: "Player #{player_num}"})
@@ -19,10 +19,7 @@ defmodule NflRushingWeb.PlayerLiveFilterTest do
       {:ok, view, _html} = live(conn, "/players")
       assert has_element?(view, "#number-player-results", "#{@default_page_size + 1}")
 
-      Map.merge(context, %{
-        players: players,
-        live_view: view
-      })
+      %{players: players, live_view: view}
     end
 
     test "exception: filtering with no matches will show flash message, and not display any players",
@@ -68,7 +65,7 @@ defmodule NflRushingWeb.PlayerLiveFilterTest do
   end
 
   describe "Test 'Filter Players' button when mutiple players are matched (case-sensitive)" do
-    setup context = %{conn: conn} do
+    setup %{conn: conn} do
       players =
         for player_num <- 1..@default_page_size do
           if Integer.is_even(player_num) do
@@ -81,10 +78,7 @@ defmodule NflRushingWeb.PlayerLiveFilterTest do
       {:ok, view, _html} = live(conn, "/players")
       assert has_element?(view, "#number-player-results", "#{@default_page_size}")
 
-      Map.merge(context, %{
-        players: players,
-        live_view: view
-      })
+      %{players: players, live_view: view}
     end
 
     test "success: filtering by substring that matches start of multiple player names", %{

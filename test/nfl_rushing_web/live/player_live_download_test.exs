@@ -1,4 +1,4 @@
-defmodule NflRushingWeb.PlayerLiveTest do
+defmodule NflRushingWeb.PlayerLiveDownloadTest do
   use NflRushingWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -7,13 +7,9 @@ defmodule NflRushingWeb.PlayerLiveTest do
   import NflRushingWeb.PlayerLiveTestHelper,
     only: [
       create_test_player: 1,
-      player_path: 1,
-      player_row: 1,
       set_sort_by: 2,
       set_player_filter: 2
     ]
-
-  @default_page_size 5
 
   describe "Redirects to the download controller with the correct sort/filter parameters" do
     setup %{conn: conn} do

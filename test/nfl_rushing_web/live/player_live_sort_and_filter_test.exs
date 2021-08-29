@@ -13,19 +13,13 @@ defmodule NflRushingWeb.PlayerLiveSortAndFilterTest do
     ]
 
   describe "Create 4 players for tests that apply a variety of filters and sorts" do
-    setup context = %{conn: conn} do
+    setup %{conn: conn} do
       {player1, player2, player3, player4} = create_four_test_players()
 
       {:ok, view, _html} = live(conn, "/players")
       assert has_element?(view, "#number-player-results", "4")
 
-      Map.merge(context, %{
-        player1: player1,
-        player2: player2,
-        player3: player3,
-        player4: player4,
-        live_view: view
-      })
+      %{player1: player1, player2: player2, player3: player3, player4: player4, live_view: view}
     end
 
     # combination tested: player-name, 'not4'

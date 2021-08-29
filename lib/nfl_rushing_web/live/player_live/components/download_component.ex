@@ -42,6 +42,6 @@ defmodule NflRushingWeb.PlayerLive.DownloadComponent do
   end
 
   defp download_path(%{sort_by: sort_by, player_filter: player_filter}) do
-    "/api/download?sort_by=#{sort_by}&player_filter=#{player_filter}"
+    URI.encode("/api/download?sort_by=#{sort_by}&player_filter=#{player_filter}")
   end
 end

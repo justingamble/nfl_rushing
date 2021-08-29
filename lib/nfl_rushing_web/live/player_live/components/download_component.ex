@@ -7,7 +7,7 @@ defmodule NflRushingWeb.PlayerLive.DownloadComponent do
       <div class="w-1/2 bg-yellow-500 hover:bg-yellow-600 focus:outline-none
                   text-black font-semibold rounded-md mb-6 p-3 min-w-max
                   ">
-        <a href=<%= Routes.static_path(@socket, "/api/download?sort_by=#{@sort_by}&player_filter=#{@player_filter}") %> id="download-link" target="_blank">
+        <a href=<%= Routes.static_path(@socket, download_path(%{sort_by: @sort_by, player_filter: @player_filter})) %> id="download-link" target="_blank">
           <div class="text-center">
             Download players
           </div>
@@ -38,6 +38,10 @@ defmodule NflRushingWeb.PlayerLive.DownloadComponent do
 
     # TODO: consider having a pubsub message to indicate when the file download has finished?
     {:noreply,
-     socket |> redirect(to: "/api/download?sort_by=#{sort_by}&player_filter=#{player_filter}")}
+     socket |> redirect(to: download_path(%{sort_by: sort_by, player_filter: player_filter}))}
+  end
+
+  defp download_path(%{sort_by: sort_by, player_filter: player_filter}) do
+    "/api/download?sort_by=#{sort_by}&player_filter=#{player_filter}"
   end
 end

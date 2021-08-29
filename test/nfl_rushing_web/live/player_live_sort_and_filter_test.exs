@@ -9,7 +9,9 @@ defmodule NflRushingWeb.PlayerLiveSortAndFilterTest do
       create_four_test_players: 0,
       player_row: 1,
       player_index: 2,
-      players_in_order: 3
+      players_in_order: 3,
+      set_sort_by: 2,
+      set_player_filter: 2
     ]
 
   describe "Create 4 players for tests that apply a variety of filters and sorts" do
@@ -31,21 +33,10 @@ defmodule NflRushingWeb.PlayerLiveSortAndFilterTest do
            player4: player4,
            live_view: view
          } do
-      view
-      |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :total_rushing_touchdowns}})
-      |> render_change()
-
-      view
-      |> form("#player-filter-form", %{player_name: "not3"})
-      |> render_submit()
-
-      view
-      |> form("#player-filter-form", %{player_name: "not4"})
-      |> render_submit()
-
-      view
-      |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :player_name}})
-      |> render_change()
+      set_sort_by(view, :total_rushing_touchdowns)
+      set_player_filter(view, "not3")
+      set_player_filter(view, "not4")
+      set_sort_by(view, :player_name)
 
       assert has_element?(view, "#number-player-results", "3")
 
@@ -68,13 +59,8 @@ defmodule NflRushingWeb.PlayerLiveSortAndFilterTest do
            player4: player4,
            live_view: view
          } do
-      view
-      |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :total_rushing_yards}})
-      |> render_change()
-
-      view
-      |> form("#player-filter-form", %{player_name: "not2"})
-      |> render_submit()
+      set_sort_by(view, :total_rushing_yards)
+      set_player_filter(view, "not2")
 
       assert has_element?(view, "#number-player-results", "3")
 
@@ -97,13 +83,8 @@ defmodule NflRushingWeb.PlayerLiveSortAndFilterTest do
            player4: player4,
            live_view: view
          } do
-      view
-      |> form("#player-filter-form", %{player_name: "not1"})
-      |> render_submit()
-
-      view
-      |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :longest_rush}})
-      |> render_change()
+      set_player_filter(view, "not1")
+      set_sort_by(view, :longest_rush)
 
       assert has_element?(view, "#number-player-results", "3")
 
@@ -126,17 +107,9 @@ defmodule NflRushingWeb.PlayerLiveSortAndFilterTest do
            player4: player4,
            live_view: view
          } do
-      view
-      |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :longest_rush}})
-      |> render_change()
-
-      view
-      |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: :total_rushing_touchdowns}})
-      |> render_change()
-
-      view
-      |> form("#player-filter-form", %{player_name: "not3"})
-      |> render_submit()
+      set_sort_by(view, :longest_rush)
+      set_sort_by(view, :total_rushing_touchdowns)
+      set_player_filter(view, "not3")
 
       assert has_element?(view, "#number-player-results", "3")
 

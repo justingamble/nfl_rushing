@@ -1,4 +1,6 @@
 defmodule NflRushingWeb.PlayerLiveTestHelper do
+  import Phoenix.LiveViewTest
+
   def player_path(%{page: page_number, per_page: per_page}) do
     "/players?" <> "page=#{page_number}&per_page=#{per_page}"
   end
@@ -74,5 +76,17 @@ defmodule NflRushingWeb.PlayerLiveTestHelper do
       |> NflRushing.PlayerStats.create_player()
 
     player
+  end
+
+  def set_sort_by(view, sort_by) when is_atom(sort_by) do
+    view
+    |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: sort_by}})
+    |> render_change()
+  end
+
+  def set_player_filter(view, player_filter) when is_binary(player_filter) do
+    view
+    |> form("#player-filter-form", %{player_name: player_filter})
+    |> render_submit()
   end
 end

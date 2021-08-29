@@ -8,7 +8,9 @@ defmodule NflRushingWeb.PlayerLiveTest do
     only: [
       create_test_player: 1,
       player_path: 1,
-      player_row: 1
+      player_row: 1,
+      set_sort_by: 2,
+      set_player_filter: 2
     ]
 
   @default_page_size 5
@@ -66,18 +68,6 @@ defmodule NflRushingWeb.PlayerLiveTest do
                {:error,
                 {:redirect, %{to: "/api/download?sort_by=longest_rush&player_filter=Player%20#1"}}}
     end
-  end
-
-  defp set_sort_by(view, sort_by) when is_atom(sort_by) do
-    view
-    |> form("#sort-by-dropbox", %{sort_by_form: %{sort_by: sort_by}})
-    |> render_change()
-  end
-
-  defp set_player_filter(view, player_filter) when is_binary(player_filter) do
-    view
-    |> form("#player-filter-form", %{player_name: player_filter})
-    |> render_submit()
   end
 
   #  describe "Flash message is down after file download" do

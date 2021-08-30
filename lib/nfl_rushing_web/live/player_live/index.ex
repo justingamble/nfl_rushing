@@ -140,6 +140,15 @@ defmodule NflRushingWeb.PlayerLive.Index do
     end
   end
 
+  defp sort_options() do
+    [
+      "Player Name": "player_name",
+      "Total Rushing Yards (Yds)": "total_rushing_yards",
+      "Total Rushing Touchdowns (TD)": "total_rushing_touchdowns",
+      "Longest Rush (Lng)": "longest_rush"
+    ]
+  end
+
   defp assign_loading_and_trigger_filter_and_sort(
          socket,
          player_filter,
@@ -178,20 +187,19 @@ defmodule NflRushingWeb.PlayerLive.Index do
     )
   end
 
-  defp sort_options() do
-    [
-      "Player Name": "player_name",
-      "Total Rushing Yards (Yds)": "total_rushing_yards",
-      "Total Rushing Touchdowns (TD)": "total_rushing_touchdowns",
-      "Longest Rush (Lng)": "longest_rush"
-    ]
-  end
-
   defp get_paginate_from_params(params) do
     page = String.to_integer(params["page"] || default_paginate_page())
     per_page = String.to_integer(params["per_page"] || default_paginate_per_page())
 
     %{page: page, per_page: per_page}
+  end
+
+  defp default_paginate_page() do
+    "1"
+  end
+
+  defp default_paginate_per_page() do
+    "5"
   end
 
   defp get_paginate_when_per_page_changes(%{page: page, per_page: per_page}, player_num_results)
@@ -201,6 +209,10 @@ defmodule NflRushingWeb.PlayerLive.Index do
     %{page: min(page, max_pages), per_page: per_page}
   end
 
+  defp max_pagination_page(total_num_results, per_page) do
+    ceil(total_num_results / per_page)
+  end
+
   # When deciding pagination, this is used to give the display of range of
   # pages to offer the user.
   defp pagination_range(total_num_results, page_number, per_page) do
@@ -208,18 +220,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
     local_min = min(max_pages - 2, page_number - 2)
     local_max = min(max_pages, page_number + 2)
     local_min..local_max
-  end
-
-  defp max_pagination_page(total_num_results, per_page) do
-    ceil(total_num_results / per_page)
-  end
-
-  defp default_paginate_page() do
-    "1"
-  end
-
-  defp default_paginate_per_page() do
-    "5"
   end
 
   defp per_page_options() do

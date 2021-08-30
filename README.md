@@ -179,11 +179,14 @@ becomes corrupt, you can drop and recreate the database tables via:
     - Erlang 23.2.4.2
 - Browser testing was done with Google Chrome.
 - This application loads data into a PostgreSQL database, and queries from it.
-
+[asdf](https://github.com/asdf-vm/asdf) 
 ### File Parsing and Loading
-- Application uses Elixir to implement the initial parsing and loading. The code for the file loading is in 
-lib/nfl_rushing/player_stats/player_load.ex .  Advantages of using 
+- Elixir code used to implement the initial parsing and loading. The code for the file loading is in 
+[lib/nfl_rushing/player_stats/player_load.ex](https://github.com/justingamble/nfl_rushing/blob/main/lib/nfl_rushing/player_stats/player_load.ex) .  Advantages of using 
 Elixir for this task:
+    - Unit tests to confirm the `player_load.ex` works as 
+    expected. (Tests are [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/player_load_test.exs), and work with [this sample data](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/fake_player_data.json))
+    see here)
     - An easy-to-maintain Elixir pipeline for the loading 
     tasks:
 ```elixir
@@ -197,8 +200,6 @@ Elixir for this task:
     |> clean_longest_rush
   end
 ```
-    - Unit tests to confirm the `player_load.ex` works as 
-    expected.
 
 ### File download
 - The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.

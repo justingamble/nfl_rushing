@@ -2,7 +2,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
   use NflRushingWeb, :live_view
 
   alias NflRushing.PlayerStats
-#  alias NflRushing.PlayerStats.Player
+  #  alias NflRushing.PlayerStats.Player
   alias NflRushingWeb.Endpoint
 
   require Integer
@@ -11,7 +11,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   @impl true
   def mount(params, _session, socket) do
-
     paginate = get_paginate_from_params(params)
 
     if connected?(socket) do
@@ -35,7 +34,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
-
     paginate = get_paginate_from_params(params)
 
     player_filter = socket.assigns.player_filter
@@ -81,7 +79,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
         %{"sort_by_form" => %{"sort_by" => sort_by}},
         %{assigns: %{player_filter: player_filter, paginate: paginate}} = socket
       ) do
-
     sort_column = String.to_atom(sort_by)
 
     socket =
@@ -106,7 +103,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
           }
         } = socket
       ) do
-
     per_page = String.to_integer(per_page)
 
     paginate =
@@ -149,7 +145,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
   @impl true
   def handle_info({:run_player_search, player_filter, sort_column, paginate}, socket)
       when is_atom(sort_column) do
-
     case list_players(player_filter, sort_column, paginate) do
       [] ->
         socket =

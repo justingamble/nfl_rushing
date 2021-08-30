@@ -80,6 +80,5 @@ defmodule NflRushingWeb.PlayerLiveDownloadTest do
 
       assert render(view) =~ "Player data downloaded successfully"
     end
-
   end
 end

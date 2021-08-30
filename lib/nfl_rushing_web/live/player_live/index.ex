@@ -11,8 +11,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   @impl true
   def mount(params, _session, socket) do
-    IO.puts("------------------ index.ex: mount() ---------------\n")
-    IO.puts("______________ mount: setting loading to FALSE \n")
 
     paginate = get_paginate_from_params(params)
 
@@ -37,7 +35,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
-    IO.puts("------------------ index.ex: handle_params() entered ---------------\n")
 
     paginate = get_paginate_from_params(params)
 
@@ -56,8 +53,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
         player_num_results: player_num_results
       )
 
-    IO.puts("------------------ index.ex: handle_params() exited ---------------\n")
-
     {:noreply, socket}
   end
 
@@ -68,14 +63,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
         %{assigns: %{sort_by: sort_column, paginate: paginate}} = socket
       ) do
     paginate_from_page_one = %{paginate | page: 1}
-
-    IO.puts(
-      "**** filter component's handle_event 'player-filter' -> received player: #{
-        inspect(player_filter)
-      }, got sort column from socket: #{inspect(sort_column)}
-        \n ____________ setting loading to TRUE __________ \n
-      "
-    )
 
     socket =
       socket
@@ -94,13 +81,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
         %{"sort_by_form" => %{"sort_by" => sort_by}},
         %{assigns: %{player_filter: player_filter, paginate: paginate}} = socket
       ) do
-    IO.puts(
-      "**** handle_event 'sort' -> received sort_column: '#{inspect(sort_by)}', and got player from socket: #{
-        inspect(player_filter)
-      }
-      \n ____________ #2 setting loading to TRUE __________ \n
-      "
-    )
 
     sort_column = String.to_atom(sort_by)
 
@@ -126,9 +106,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
           }
         } = socket
       ) do
-    IO.puts(
-      "**** handle_event 'per-page-selected' -> received per_page: '#{inspect(per_page)}'\n"
-    )
 
     per_page = String.to_integer(per_page)
 
@@ -172,7 +149,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
   @impl true
   def handle_info({:run_player_search, player_filter, sort_column, paginate}, socket)
       when is_atom(sort_column) do
-    IO.puts("______________ run_player_search _______ setting loading to FALSE \n")
 
     case list_players(player_filter, sort_column, paginate) do
       [] ->
@@ -257,7 +233,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
     max_pages = max_pagination_page(total_num_results, per_page)
     local_min = min(max_pages - 2, page_number - 2)
     local_max = min(max_pages, page_number + 2)
-    IO.puts("pagination_range.  min=#{inspect(local_min)}, max=#{inspect(local_max)}")
     local_min..local_max
   end
 

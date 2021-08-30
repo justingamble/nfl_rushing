@@ -115,20 +115,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    player = PlayerStats.get_player!(id)
-    {:ok, _} = PlayerStats.delete_player(player)
-
-    player_filter = socket.assigns.player_filter
-    sort_by = socket.assigns.sort_by
-    paginate = socket.assigns.paginate
-
-    players = list_players(player_filter, sort_by, paginate)
-
-    {:noreply, assign(socket, :players, players)}
-  end
-
-  @impl true
   def handle_info(
         %{event: "players_downloaded"},
         %{assigns: %{paginate: paginate}} = socket

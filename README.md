@@ -171,7 +171,7 @@ becomes corrupt, you can drop and recreate the database tables via:
    mix ecto.reset
 ```
 
-## Design Decisions
+### Design Decisions
 
 #### Overview
 - Application was implemented and tested using Phoenix Liveview.
@@ -180,21 +180,69 @@ becomes corrupt, you can drop and recreate the database tables via:
 - Browser testing was done with Google Chrome.
 - This application loads data into a PostgreSQL database, and queries from it.
 
+### File Parsing and Loading
+- Application uses Elixir to implement the initial parsing and loading. The code for the file loading is in 
+lib/nfl_rushing/player_stats/player_load.ex .  Advantages of using 
+Elixir for this task:
+    - An easy-to-maintain Elixir pipeline for the loading 
+    tasks:
+```elixir
+  def get_clean_player_stats_in_a_list_of_structs(filename) when is_binary(filename) do
+    parse_json_file_into_a_list_of_structs(filename)
+    |> clean_rushing_attempts_per_game_avg
+    |> clean_total_rushing_yards
+    |> clean_rushing_avg_yards_per_attempt
+    |> clean_rushing_yards_per_game
+    |> clean_rushing_first_down_percentage
+    |> clean_longest_rush
+  end
+```
+    - Unit tests to confirm the `player_load.ex` works as 
+    expected.
+
 ### File download
 - The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.
-- The file being downloaded is streamed from the database to the user. In particular, the data is not first written to
-a file on the web server. The advantage of this approach is there is no need to subsequently cleanup the temporary files.
+- The file being downloaded is streamed from the database to the user. In particular, the data is not first written to a file on the web server. The advantage of this approach is there is no need to subsequently cleanup the temporary files.
 
 ### Scaling to support 10K players
 - As mentioned in the File download section, the download functionality is implemented using streaming. 
-  As the data is queried from the database, it is uploaded to the user. The data is not all queried up-front, 
-  which means the download process should start right away - even for larger datasets.
-- When the user presses the filter button, or changes the sorting column, a "loading" icon is displayed. For larger
-  datasets this provides immediate feedback to the user.  For small datasets, like the sample 326 records, the 
-  loading icon disappears right away and is barely noticeable.
+As the data is queried from the database, it is uploaded to the user. 
+The data is not all queried up-front, which means the download process 
+should start right away - even for larger datasets.
+- Pagination was added to avoid displaying all the records on a 
+single page. This reduces load time. The pagination dropbox currently contains choices for 5, 10, 15, or 20 records/page. These can be easily updated to other sizes.
+- When the user presses the filter button, or changes the sorting 
+column, a "loading" icon is displayed. For larger datasets this 
+provides immediate feedback to the user. For small datasets, like the 
+sample 326 records, the loading icon disappears right away and is 
+barely noticeable.
 
-### Implementation Notes
-- Some player records have a `LNG` field with an integer, others have an integer followed by 'T'.  Example: "29T".  When sorting on the LNG column, the application simply ignores the T, and sorts based on the numeric value.
+### Sorting the Player records
+- Some player records have a `LNG` field with an integer, others have 
+an integer followed by 'T'.  Example: "29T".  When sorting on the LNG 
+column, the application will first sort the records by the numeric 
+value, and if there are multiple records with the same numeric value 
+then the records with 'T' are listed at the end.  For example, given 
+these LNG values: ['23', '19', '23T', '23', '24'], when sorting by 'LNG' the 
+output will be in this order: ['19', '23', '23', '23T', '24'].
+- The user specifies a sort column from a dropbox. They can choose
+one of: Player Name, Total Rushing Yards (Yds), Total Rushing Touchdowns (TD), Longest Rush (Lng)).  The records are sorted on a primary and secondary column(s). By using a secondary column, the 
+application guarantees an ordering for the player records that will 
+be consistent for the webpage table as well as in the downloaded CSV file.
+    - If Total Rushing Yards or Total Rushing Touchdowns is selected
+      by the user, then the secondary column is the Player Name.
+    - If the Player Name is selected by the user, then the secondary
+      column is the database ID for the records.
+    - If the Longest Rush is selected by the user, then there are
+      two secondary columns.  First the record data is sorted by the
+      numeric value of LNG, then by whether or not a trailing 'T'
+      exists, and finally (if needed) by the Player Name.
 
-### Limitations: 
-- sorting by T (T is simply ignored)
+### 404 page
+- If the user navigates to https://localhost:4000 , they are 
+redirected to https://localhost:4000/players
+- If the user navigates to a non-existent URL, they will see a 
+404 page that redirects them back to the Players listing:
+- There is a unit test for the 404 behaviour included in 
+test/nfl_rushing_web/views/error_view_test.exs
+

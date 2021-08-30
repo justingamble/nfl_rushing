@@ -1,8 +1,9 @@
 defmodule NflRushingWeb.PlayerLiveDownloadTest do
   use NflRushingWeb.ConnCase
 
-  import Phoenix.LiveViewTest
   require Integer
+
+  import Phoenix.LiveViewTest
 
   import NflRushingWeb.PlayerLiveTestHelper,
     only: [
@@ -10,6 +11,10 @@ defmodule NflRushingWeb.PlayerLiveDownloadTest do
       set_sort_by: 2,
       set_player_filter: 2
     ]
+
+  alias NflRushingWeb.Endpoint
+
+  @download_results_topic "download_results"
 
   describe "Redirects to the download controller with the correct sort/filter parameters" do
     setup %{conn: conn} do
@@ -66,20 +71,15 @@ defmodule NflRushingWeb.PlayerLiveDownloadTest do
     end
   end
 
-  #  describe "Flash message is down after file download" do
-  #
-  #    test "After download pressed, a flash message is visible", %{conn: conn} do
-  #        _player_1 = create_test_player(%{player_name: "Player #1"})
-  #
-  #        {:ok, view, _html} = live(conn, "/players")
-  ##       =~ "Player data downloaded successfully#"
-  #
-  #        view |> element("#download-link") |> render_click() =~ "Player data downloaded successfully"
-  #  #      view
-  #      |> form("#player-filter-form", %{player_name: expected_player_name})
-  #      |> render_submit()
-  #    end
-  #
-  #    end
-  #  end
+  describe "Flash message is shown" do
+    test "success: after broadcast to Phoenix PubSub, flash message is shown", %{conn: conn} do
+      _player_1 = create_test_player(%{player_name: "Player #1"})
+      {:ok, view, _html} = live(conn, "/players")
+
+      Endpoint.broadcast(@download_results_topic, "players_downloaded", %{})
+
+      assert render(view) =~ "Player data downloaded successfully"
+    end
+
+  end
 end

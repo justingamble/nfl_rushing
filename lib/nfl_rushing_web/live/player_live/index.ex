@@ -32,11 +32,12 @@ defmodule NflRushingWeb.PlayerLive.Index do
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
+  def handle_params(
+        params,
+        _url,
+        %{assigns: %{player_filter: player_filter, sort_by: sort_by}} = socket
+      ) do
     paginate = get_paginate_from_params(params)
-
-    player_filter = socket.assigns.player_filter
-    sort_by = socket.assigns.sort_by
 
     players = list_players(player_filter, sort_by, paginate)
     player_num_results = count_results(player_filter)

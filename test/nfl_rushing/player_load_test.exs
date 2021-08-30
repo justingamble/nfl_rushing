@@ -35,7 +35,7 @@ defmodule NflRushing.PlayerLoadTest do
       player_structs: player_structs,
       player_struct_fields: player_struct_fields
     } do
-      # NOTE: Test this verifies: a) none of the fields are nil, and b) all the fields are mapped correctly.
+      # This test this verifies: a) none of the fields are nil, and b) all the fields are mapped correctly.
 
       # Expected
       expected_player = %PlayerStruct{

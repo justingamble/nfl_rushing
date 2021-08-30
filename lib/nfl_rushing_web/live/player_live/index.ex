@@ -2,7 +2,6 @@ defmodule NflRushingWeb.PlayerLive.Index do
   use NflRushingWeb, :live_view
 
   alias NflRushing.PlayerStats
-  #  alias NflRushing.PlayerStats.Player
   alias NflRushingWeb.Endpoint
 
   require Integer
@@ -60,15 +59,12 @@ defmodule NflRushingWeb.PlayerLive.Index do
         %{"player_name" => player_filter},
         %{assigns: %{sort_by: sort_column, paginate: paginate}} = socket
       ) do
-    paginate_from_page_one = %{paginate | page: 1}
+    player_filter = String.trim(player_filter)
+    paginate = %{paginate | page: 1}
 
     socket =
       socket
-      |> assign_loading_and_trigger_filter_and_sort(
-        player_filter,
-        sort_column,
-        paginate_from_page_one
-      )
+      |> assign_loading_and_trigger_filter_and_sort(player_filter, sort_column, paginate)
 
     {:noreply, socket}
   end
@@ -83,11 +79,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
 
     socket =
       socket
-      |> assign_loading_and_trigger_filter_and_sort(
-        player_filter,
-        sort_column,
-        paginate
-      )
+      |> assign_loading_and_trigger_filter_and_sort(player_filter, sort_column, paginate)
 
     {:noreply, socket}
   end

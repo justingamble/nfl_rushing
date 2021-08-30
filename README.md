@@ -178,27 +178,28 @@ becomes corrupt, you can drop and recreate the database tables via:
     - Elixir 1.11.3 (compiled with Erlang/OTP 23)  
     - Erlang 23.2.4.2
 - Browser testing was done with Google Chrome.
+- Front end interface was styled with [Tailwind CSS](https://tailwindcss.com/docs)
 - This application loads data into a PostgreSQL database, and queries from it.
-[asdf](https://github.com/asdf-vm/asdf) 
+
 #### File Parsing and Loading
-- Elixir code implements the initial parsing and loading. The code for the file loading is in 
+- Elixir code implements the data parsing and loading into the Ecto database. The code for the file loading is in 
 [lib/nfl_rushing/player_stats/player_load.ex](https://github.com/justingamble/nfl_rushing/blob/main/lib/nfl_rushing/player_stats/player_load.ex) .  Advantages of using 
 Elixir for this task:
     - Unit tests to confirm the `player_load.ex` works as 
-    expected. (Tests are [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/player_load_test.exs) and work with [this sample data](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/fake_player_data.json))
+    expected. Unit tests are [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/player_load_test.exs) and work with [this sample data](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/fake_player_data.json).
     - An easy-to-maintain Elixir pipeline for the loading 
-    tasks:
-```elixir
-  def get_clean_player_stats_in_a_list_of_structs(filename) when is_binary(filename) do
-    parse_json_file_into_a_list_of_structs(filename)
-    |> clean_rushing_attempts_per_game_avg
-    |> clean_total_rushing_yards
-    |> clean_rushing_avg_yards_per_attempt
-    |> clean_rushing_yards_per_game
-    |> clean_rushing_first_down_percentage
-    |> clean_longest_rush
-  end
-```
+    tasks.
+    ```elixir
+      def get_clean_player_stats_in_a_list_of_structs(filename) when is_binary(filename) do
+        parse_json_file_into_a_list_of_structs(filename)
+        |> clean_rushing_attempts_per_game_avg
+        |> clean_total_rushing_yards
+        |> clean_rushing_avg_yards_per_attempt
+        |> clean_rushing_yards_per_game
+        |> clean_rushing_first_down_percentage
+        |> clean_longest_rush
+      end
+    ```
 
 #### File download
 - The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.

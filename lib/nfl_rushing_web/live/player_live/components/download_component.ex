@@ -27,8 +27,6 @@ defmodule NflRushingWeb.PlayerLive.DownloadComponent do
           }
         } = socket
       ) do
-    IO.puts("**** handle_event 'player-download' pressed *****")
-
     children =
       {NflRushingWeb.Api.DownloadController,
        [player_filter: player_filter, sort_by: sort_by, socket: socket]}
@@ -36,7 +34,6 @@ defmodule NflRushingWeb.PlayerLive.DownloadComponent do
     Supervisor.start_link([children], strategy: :one_for_one)
     :timer.sleep(5000)
 
-    # TODO: consider having a pubsub message to indicate when the file download has finished?
     {:noreply,
      socket |> redirect(to: download_path(%{sort_by: sort_by, player_filter: player_filter}))}
   end

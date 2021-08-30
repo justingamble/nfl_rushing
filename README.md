@@ -180,13 +180,12 @@ becomes corrupt, you can drop and recreate the database tables via:
 - Browser testing was done with Google Chrome.
 - This application loads data into a PostgreSQL database, and queries from it.
 [asdf](https://github.com/asdf-vm/asdf) 
-### File Parsing and Loading
-- Elixir code used to implement the initial parsing and loading. The code for the file loading is in 
+#### File Parsing and Loading
+- Elixir code implements the initial parsing and loading. The code for the file loading is in 
 [lib/nfl_rushing/player_stats/player_load.ex](https://github.com/justingamble/nfl_rushing/blob/main/lib/nfl_rushing/player_stats/player_load.ex) .  Advantages of using 
 Elixir for this task:
     - Unit tests to confirm the `player_load.ex` works as 
-    expected. (Tests are [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/player_load_test.exs), and work with [this sample data](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/fake_player_data.json))
-    see here)
+    expected. (Tests are [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/player_load_test.exs) and work with [this sample data](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/fake_player_data.json))
     - An easy-to-maintain Elixir pipeline for the loading 
     tasks:
 ```elixir
@@ -201,24 +200,24 @@ Elixir for this task:
   end
 ```
 
-### File download
+#### File download
 - The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.
 - The file being downloaded is streamed from the database to the user. In particular, the data is not first written to a file on the web server. The advantage of this approach is there is no need to subsequently cleanup the temporary files.
 
-### Scaling to support 10K players
+#### Scaling to support 10K players
 - As mentioned in the File download section, the download functionality is implemented using streaming. 
 As the data is queried from the database, it is uploaded to the user. 
 The data is not all queried up-front, which means the download process 
 should start right away - even for larger datasets.
 - Pagination was added to avoid displaying all the records on a 
-single page. This reduces load time. The pagination dropbox currently contains choices for 5, 10, 15, or 20 records/page. These can be easily updated to other sizes.
+single page. This reduces load time. The pagination dropbox currently contains choices for 5, 10, 15, or 20 records/page. These can be changed to other sizes, as needed.
 - When the user presses the filter button, or changes the sorting 
 column, a "loading" icon is displayed. For larger datasets this 
 provides immediate feedback to the user. For small datasets, like the 
 sample 326 records, the loading icon disappears right away and is 
 barely noticeable.
 
-### Sorting the Player records
+#### Sorting the Player records
 - Some player records have a `LNG` field with an integer, others have 
 an integer followed by 'T'.  Example: "29T".  When sorting on the LNG 
 column, the application will first sort the records by the numeric 
@@ -227,7 +226,9 @@ then the records with 'T' are listed at the end.  For example, given
 these LNG values: ['23', '19', '23T', '23', '24'], when sorting by 'LNG' the 
 output will be in this order: ['19', '23', '23', '23T', '24'].
 - The user specifies a sort column from a dropbox. They can choose
-one of: Player Name, Total Rushing Yards (Yds), Total Rushing Touchdowns (TD), Longest Rush (Lng)).  The records are sorted on a primary and secondary column(s). By using a secondary column, the 
+one of: Player Name, Total Rushing Yards (Yds), Total Rushing Touchdowns (TD), 
+or Longest Rush (Lng)). The records are sorted on a primary and secondary 
+column(s). By using a secondary column, the 
 application guarantees an ordering for the player records that will 
 be consistent for the webpage table as well as in the downloaded CSV file.
     - If Total Rushing Yards or Total Rushing Touchdowns is selected
@@ -239,11 +240,14 @@ be consistent for the webpage table as well as in the downloaded CSV file.
       numeric value of LNG, then by whether or not a trailing 'T'
       exists, and finally (if needed) by the Player Name.
 
-### 404 page
+#### 404 page
 - If the user navigates to https://localhost:4000 , they are 
 redirected to https://localhost:4000/players
 - If the user navigates to a non-existent URL, they will see a 
 404 page that redirects them back to the Players listing:
+
+![FourZeroFourPage](assets/static/images/theScore.404page.png)
+
 - There is a unit test for the 404 behaviour included in 
-test/nfl_rushing_web/views/error_view_test.exs
+[test/nfl_rushing_web/views/error_view_test.exs](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing_web/views/error_view_test.exs)
 

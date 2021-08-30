@@ -2,7 +2,7 @@ defmodule NflRushingWeb.PlayerLive.Index do
   use NflRushingWeb, :live_view
 
   alias NflRushing.PlayerStats
-  alias NflRushing.PlayerStats.Player
+#  alias NflRushing.PlayerStats.Player
   alias NflRushingWeb.Endpoint
 
   require Integer
@@ -312,21 +312,15 @@ defmodule NflRushingWeb.PlayerLive.Index do
     end
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, "Edit Player")
-    |> assign(:player, PlayerStats.get_player!(id))
+  defp apply_action(socket, :index, _params) do
+    apply_list_players(socket)
   end
 
-  defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:page_title, "New Player")
-    |> assign(:player, %Player{})
+  defp apply_action(socket, nil, _params) do
+    apply_list_players(socket)
   end
 
-  ##  NOTE: if you :index from router.ex, then you need to specify :index here
-  #  defp apply_action(socket, :index, _params) do
-  defp apply_action(socket, _index, _params) do
+  defp apply_list_players(socket) do
     socket
     |> assign(:page_title, "Listing Players")
     |> assign(:player, nil)

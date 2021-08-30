@@ -217,7 +217,7 @@ provides immediate feedback to the user. For small datasets, like the
 sample 326 records, the loading icon disappears right away and is 
 barely noticeable.
 
-#### Sorting the Player records
+#### Sorting player records
 - Some player records have a `LNG` field with an integer, others have 
 an integer followed by 'T'.  Example: "29T".  When sorting on the LNG 
 column, the application will first sort the records by the numeric 
@@ -239,6 +239,12 @@ be consistent for the webpage table as well as in the downloaded CSV file.
       two secondary columns.  First the record data is sorted by the
       numeric value of LNG, then by whether or not a trailing 'T'
       exists, and finally (if needed) by the Player Name.
+
+#### Filtering player records
+- Users can filter on an exact name.  Example: "Adam Thielen".
+- Users can filter on a partial name.  Example: "Adam" will return all records where the first 
+or last names include the letters 'adam'.
+- Searches are not case sensitive.  Searching on "adam" returns the same results as "ADAM".
 
 #### 404 page
 - If the user navigates to http://localhost:4000, they are 

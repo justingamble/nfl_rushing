@@ -12,16 +12,6 @@ defmodule NflRushingWeb.Api.DownloadController do
   end
 
   def download(conn, %{"sort_by" => sort_by, "player_filter" => player_filter} = _params) do
-    IO.puts(
-      "===================================================================================="
-    )
-
-    IO.puts(
-      "Download_controller.ex.... My player filter=#{inspect(player_filter)}, sort column=#{
-        inspect(sort_by)
-      }"
-    )
-
     criteria = [player_name: player_filter, sort_by: String.to_atom(sort_by)]
 
     case NflRushing.PlayerStats.count(criteria) do

@@ -241,8 +241,8 @@ be consistent for the webpage table as well as in the downloaded CSV file.
       exists, and finally (if needed) by the Player Name.
 
 #### 404 page
-- If the user navigates to https://localhost:4000 , they are 
-redirected to https://localhost:4000/players
+- If the user navigates to http://localhost:4000, they are 
+redirected to http://localhost:4000/players
 - If the user navigates to a non-existent URL, they will see a 
 404 page that redirects them back to the Players listing:
 

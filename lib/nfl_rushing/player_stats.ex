@@ -91,15 +91,9 @@ defmodule NflRushing.PlayerStats do
   # Example criteria:  [player_name: "joe"]
   # will find all records where player_name contains 'joe' as part/all of the name.
   def build_player_query(criteria) when is_list(criteria) do
-    #    :timer.sleep(2000)      ## Useful for testing load icon
+    #    :timer.sleep(2000)      ## Useful for testing loading icon
 
     query = from(p in Player)
-
-    IO.puts(
-      "******* #{inspect(__MODULE__)}, build_player_query(): , list_players called: #{
-        inspect(criteria)
-      } *****\n"
-    )
 
     final_query =
       Enum.reduce(criteria, query, fn

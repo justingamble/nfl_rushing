@@ -164,8 +164,7 @@ download was successful.
 
 #### To reset the data:
 
-This application does not modify the Player data.  However, if the player data in the database
-becomes corrupt, you can drop and recreate the database tables via:
+If the player data in the database becomes corrupt, you can drop and recreate the database tables via:
 
 ```elixir
    mix ecto.reset
@@ -218,6 +217,8 @@ column, a "loading" icon is displayed. For larger datasets this
 provides immediate feedback to the user. For small datasets, like the 
 sample 326 records, the loading icon disappears right away and is 
 barely noticeable.
+
+![LoadingIcon](assets/static/images/loading_icon.png)
 
 #### Sorting player records
 - Some player records have a `LNG` field with an integer, others have 

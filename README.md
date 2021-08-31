@@ -214,9 +214,9 @@ single page. This reduces load time. The pagination dropbox currently contains c
 - A PostgreSQL database is used to store and query the player records.  Databases are designed to handle large data sets.
 - When the user presses the filter button, or changes the sorting 
 column, a "loading" icon is displayed. For larger datasets this 
-provides immediate feedback to the user. For small datasets, like the 
-sample 326 records, the loading icon disappears right away and is 
-barely noticeable.
+provides immediate feedback to the user, while the data is being loaded.
+For small datasets, like the sample 326 records, the loading icon disappears 
+right away and is barely noticeable.
 
 ![LoadingIcon](assets/static/images/loading_icon.png)
 

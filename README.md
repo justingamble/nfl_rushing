@@ -86,9 +86,7 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ```elixir
         config :nfl_rushing, NflRushing.Repo
 ```
-This section contains the settings the application will use to 
-connect to your database. Double-check them to make sure they'll work. 
-In particular, make sure the username and password are correct.
+This section contains the settings the application will use to connect to your database.  Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
 
 6. Run the following commands inside the `nfl_rushing` directory to 
    download the dependencies, compile the application, and populate the
@@ -99,9 +97,7 @@ In particular, make sure the username and password are correct.
         mix do deps.get, compile
 ```
 
-Part of the output includes a number of 
-`INSERT INTO "players" ("longest_rush", ...)` statements.  
-After all of these INSERT statements you should see output like this:
+Part of the output includes a number of `INSERT INTO "players" ("longest_rush", ...)` statements.  After all of these INSERT statements you should see output like this:
 ```
         Data successfully loaded!
 ```
@@ -159,15 +155,13 @@ You should see:
 
 ![StartScreen](assets/static/images/start_screen.png)
 
-If you now press the "Download players" button, you should see 
-flash message that indicates the file download was successful.
+If you now press the "Download players" button, you should see flash message that indicates the file download was successful.
 
 ![DownloadMessage](assets/static/images/download_message2.jpg)
 
 #### To reset the data:
 
-If the player data in the database becomes corrupt, you can drop 
-and recreate the database tables via:
+If the player data in the database becomes corrupt, you can drop and recreate the database tables via:
 
 ```elixir
    mix ecto.reset
@@ -184,13 +178,9 @@ and recreate the database tables via:
 - This application loads data into a PostgreSQL database, and queries from it.
 
 #### File Parsing and Loading
-- Elixir code implements the data parsing and loading into the Ecto database. The code for the file loading is in 
-[lib/nfl_rushing/player_stats/player_load.ex](https://github.com/justingamble/nfl_rushing/blob/main/lib/nfl_rushing/player_stats/player_load.ex) .  Advantages of using 
-Elixir for this task:
-    - Unit tests to confirm the `player_load.ex` works as 
-    expected. Unit tests are [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/player_load_test.exs) and work with [this sample data](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/fake_player_data.json).
-    - An easy-to-maintain Elixir pipeline for the loading 
-    tasks.
+- Elixir code implements the data parsing and loading into the Ecto database. The code for the file loading is in [lib/nfl_rushing/player_stats/player_load.ex](https://github.com/justingamble/nfl_rushing/blob/main/lib/nfl_rushing/player_stats/player_load.ex) .  Advantages of using Elixir for this task:
+    - Unit tests to confirm the `player_load.ex` works as expected. Unit tests are [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/player_load_test.exs) and work with [this sample data](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing/fake_player_data.json).
+    - An easy-to-maintain Elixir pipeline for the loading tasks.
     ```elixir
       def get_clean_player_stats_in_a_list_of_structs(filename) when is_binary(filename) do
         parse_json_file_into_a_list_of_structs(filename)
@@ -204,70 +194,32 @@ Elixir for this task:
     ```
 
 #### Sorting player records
-- Some player records have a `LNG` field with an integer, others have 
-an integer followed by 'T'.  Example: "29T".  When sorting on the LNG 
-column, the application will first sort the records by the numeric 
-value, and if there are multiple records with the same numeric value 
-then the records with 'T' are listed at the end.  For example, given 
-these LNG values: ['23', '19', '23T', '23', '24'], when sorting by 'LNG' the 
-output will be in this order: ['19', '23', '23', '23T', '24'].
-- The user specifies a sort column from a dropbox. They can choose
-one of: Player Name, Total Rushing Yards (Yds), Total Rushing Touchdowns (TD), 
-or Longest Rush (Lng)). The records are sorted on a primary and secondary 
-column(s). By using a secondary column, the 
-application guarantees an ordering for the player records that will 
-be consistent for the webpage table as well as in the downloaded CSV file.
-    - If Total Rushing Yards or Total Rushing Touchdowns is selected
-      by the user, then the secondary column is the Player Name.
-    - If the Player Name is selected by the user, then the secondary
-      column is the database ID for the records.
-    - If the Longest Rush is selected by the user, then there are
-      two secondary columns.  First the record data is sorted by the
-      numeric value of LNG, then by whether or not a trailing 'T'
-      exists, and finally (if needed) by the Player Name.
+- Some player records have a `LNG` field with an integer, others have an integer followed by 'T'.  Example: "29T".  When sorting on the LNG column, the application will first sort the records by the numeric value, and if there are multiple records with the same numeric value then the records with 'T' are listed at the end.  For example, given these LNG values: ['23', '19', '23T', '23', '24'], when sorting by 'LNG' the output will be in this order: ['19', '23', '23', '23T', '24'].  
+- The user specifies a sort column from a dropbox. They can choose one of: Player Name, Total Rushing Yards (Yds), Total Rushing Touchdowns (TD), or Longest Rush (Lng)). The records are sorted on a primary and secondary column(s). By using a secondary column, the application guarantees an ordering for the player records that will be consistent for the webpage table as well as in the downloaded CSV file.
+    - If Total Rushing Yards or Total Rushing Touchdowns is selected by the user, then the secondary column is the Player Name.
+    - If the Player Name is selected by the user, then the secondary column is the database ID for the records.
+    - If the Longest Rush is selected by the user, then there are two secondary columns.  First the record data is sorted by the numeric value of LNG, then by whether or not a trailing 'T' exists, and finally (if needed) by the Player Name.
 
 #### Filtering player records
 - Users can filter on an exact name.  Example: "Adam Thielen".
-- Users can filter on a partial name.  Example: "Adam" will return all 
-records where the first or last names include the letters 'adam'.
-- Searches are not case sensitive.  Searching on "adam" returns the 
-same results as "ADAM".
+- Users can filter on a partial name.  Example: "Adam" will return all records where the first or last names include the letters 'adam'.
+- Searches are not case sensitive.  Searching on "adam" returns the same results as "ADAM".
 
 #### File download
-- The download functionality is implemented using a Phoenix endpoint.  
-Once the download is complete, a message is sent to Phoenix PubSub. 
-The Phoenix Liveview application consumes the Phoenix PubSub message 
-and displays a flash message to the user.
-- The file being downloaded is streamed from the database to the user. 
-In particular, the data is not first written to a file on the web server. 
-The advantage of this approach is there is no need to subsequently 
-cleanup the temporary files.
+- The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.
+- The file being downloaded is streamed from the database to the user.  In particular, the data is not first written to a file on the web server.  The advantage of this approach is there is no need to subsequently cleanup the temporary files.
 
 #### Scaling to support 10K players
-- As mentioned in the File download section, the download functionality is 
-implemented using streaming. 
-As the data is queried from the database, it is uploaded to the user. 
-The data is not all queried up-front, which means the download process 
-should start right away - even for larger datasets.
-- Pagination was added to avoid displaying all the records on a 
-single page. This reduces load time. The pagination dropbox currently 
-contains choices for 5, 10, 15, or 20 records/page. These can be changed 
-to other sizes, if needed.
-- A PostgreSQL database is used to store and query the player records. 
-Databases are designed to handle large data sets.
-- When the user presses the filter button, or changes the sorting 
-column, a "loading" icon is displayed. For larger datasets this 
-provides immediate feedback to the user, while the data is being loaded.
-For small datasets, like the sample 326 records, the loading icon disappears 
-right away and is barely noticeable.
+- As mentioned in the File download section, the download functionality is implemented using streaming.  As the data is queried from the database, it is uploaded to the user.  The data is not all queried up-front, which means the download process should start right away - even for larger datasets.
+- Pagination was added to avoid displaying all the records on a single page. This reduces load time. The pagination dropbox currently contains choices for 5, 10, 15, or 20 records/page. These can be changed to other sizes, if needed.
+- A PostgreSQL database is used to store and query the player records.  Databases are designed to handle large data sets.
+- When the user presses the filter button, or changes the sorting column, a "loading" icon is displayed. For larger datasets this provides immediate feedback to the user, while the data is being loaded.  For small datasets, like the sample 326 records, the loading icon disappears right away and is barely noticeable.
 
     ![LoadingIcon](assets/static/images/loading_icon.png)
 
 #### 404 page
-- If the user navigates to http://localhost:4000, they are 
-redirected to http://localhost:4000/players
-- If the user navigates to a non-existent URL, they will see a 
-404 page that redirects them back to the Players listing:
+- If the user navigates to http://localhost:4000, they are redirected to http://localhost:4000/players
+- If the user navigates to a non-existent URL, they will see a 404 page that redirects them back to the Players listing:
 
     ![FourZeroFourPage](assets/static/images/theScore.404page.png)
 

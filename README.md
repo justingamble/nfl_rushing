@@ -86,9 +86,9 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ```elixir
         config :nfl_rushing, NflRushing.Repo
 ```
-    This section contains the settings the application will use to 
-    connect to your database. Double-check them to make sure they'll work. 
-    In particular, make sure the username and password are correct.
+This section contains the settings the application will use to 
+connect to your database. Double-check them to make sure they'll work. 
+In particular, make sure the username and password are correct.
 
 6. Run the following commands inside the `nfl_rushing` directory to 
    download the dependencies, compile the application, and populate the
@@ -99,9 +99,9 @@ If you have any questions regarding requirements, do not hesitate to email your 
         mix do deps.get, compile
 ```
 
-    Part of the output includes a number of 
-    `INSERT INTO "players" ("longest_rush", ...)` statements.  
-    After all of these INSERT statements you should see output like this:
+Part of the output includes a number of 
+`INSERT INTO "players" ("longest_rush", ...)` statements.  
+After all of these INSERT statements you should see output like this:
 ```
         Data successfully loaded!
 ```

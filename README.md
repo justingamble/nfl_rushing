@@ -86,8 +86,9 @@ If you have any questions regarding requirements, do not hesitate to email your 
 ```elixir
         config :nfl_rushing, NflRushing.Repo
 ```
-   This section contains the settings the application will use to connect to your database.
-   Double-check them to make sure they'll work.  In particular, make sure the username and password are correct.
+   This section contains the settings the application will use to 
+   connect to your database. Double-check them to make sure they'll work. 
+   In particular, make sure the username and password are correct.
 
 6. Run the following commands inside the `nfl_rushing` directory to 
    download the dependencies, compile the application, and populate the
@@ -98,8 +99,9 @@ If you have any questions regarding requirements, do not hesitate to email your 
         mix do deps.get, compile
 ```
 
-Part of the output includes a number of `INSERT INTO "players" ("longest_rush", ...)` statements.  After all of these INSERT statements you should see output
-like this:
+Part of the output includes a number of 
+`INSERT INTO "players" ("longest_rush", ...)` statements.  
+After all of these INSERT statements you should see output like this:
 ```
         Data successfully loaded!
 ```
@@ -157,14 +159,15 @@ You should see:
 
 ![StartScreen](assets/static/images/start_screen.png)
 
-If you now press the "Download players" button, you should see flash message that indicates the file
-download was successful.
+If you now press the "Download players" button, you should see 
+flash message that indicates the file download was successful.
 
 ![DownloadMessage](assets/static/images/download_message2.jpg)
 
 #### To reset the data:
 
-If the player data in the database becomes corrupt, you can drop and recreate the database tables via:
+If the player data in the database becomes corrupt, you can drop 
+and recreate the database tables via:
 
 ```elixir
    mix ecto.reset
@@ -201,17 +204,27 @@ Elixir for this task:
     ```
 
 #### File download
-- The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.
-- The file being downloaded is streamed from the database to the user. In particular, the data is not first written to a file on the web server. The advantage of this approach is there is no need to subsequently cleanup the temporary files.
+- The download functionality is implemented using a Phoenix endpoint.  
+Once the download is complete, a message is sent to Phoenix PubSub. 
+The Phoenix Liveview application consumes the Phoenix PubSub message 
+and displays a flash message to the user.
+- The file being downloaded is streamed from the database to the user. 
+In particular, the data is not first written to a file on the web server. 
+The advantage of this approach is there is no need to subsequently 
+cleanup the temporary files.
 
 #### Scaling to support 10K players
-- As mentioned in the File download section, the download functionality is implemented using streaming. 
+- As mentioned in the File download section, the download functionality i
+s implemented using streaming. 
 As the data is queried from the database, it is uploaded to the user. 
 The data is not all queried up-front, which means the download process 
 should start right away - even for larger datasets.
 - Pagination was added to avoid displaying all the records on a 
-single page. This reduces load time. The pagination dropbox currently contains choices for 5, 10, 15, or 20 records/page. These can be changed to other sizes, if needed.
-- A PostgreSQL database is used to store and query the player records.  Databases are designed to handle large data sets.
+single page. This reduces load time. The pagination dropbox currently 
+contains choices for 5, 10, 15, or 20 records/page. These can be changed 
+to other sizes, if needed.
+- A PostgreSQL database is used to store and query the player records. 
+Databases are designed to handle large data sets.
 - When the user presses the filter button, or changes the sorting 
 column, a "loading" icon is displayed. For larger datasets this 
 provides immediate feedback to the user, while the data is being loaded.
@@ -245,9 +258,10 @@ be consistent for the webpage table as well as in the downloaded CSV file.
 
 #### Filtering player records
 - Users can filter on an exact name.  Example: "Adam Thielen".
-- Users can filter on a partial name.  Example: "Adam" will return all records where the first 
-or last names include the letters 'adam'.
-- Searches are not case sensitive.  Searching on "adam" returns the same results as "ADAM".
+- Users can filter on a partial name.  Example: "Adam" will return all 
+records where the first or last names include the letters 'adam'.
+- Searches are not case sensitive.  Searching on "adam" returns the 
+same results as "ADAM".
 
 #### 404 page
 - If the user navigates to http://localhost:4000, they are 

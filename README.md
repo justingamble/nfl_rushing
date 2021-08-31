@@ -194,7 +194,7 @@ If the player data in the database becomes corrupt, you can drop and recreate th
     ```
 
 #### Sorting player records
-- Some player records have a `LNG` field with an integer, others have an integer followed by `T`.  Example: `29T`.  When sorting on the LNG column, the application will first sort the records by the numeric value, and if there are multiple records with the same numeric value then the records with `T` are listed at the end.  For example, given these LNG values: ['23', '19', '23T', '23', '24'], when sorting by 'LNG' the output will be in this order: ['19', '23', '23', '23T', '24'].  
+- Some player records have a `LNG` field with an integer, others have an integer followed by `T`.  Example: `29T`.  When sorting on the LNG column, the application will first sort the records by the numeric value, and if there are multiple records with the same numeric value then the records with `T` are listed at the end.  For example, given these `LNG` values: ['23', '19', '23T', '23', '24'], when sorting by `LNG` the output will be in this order: ['19', '23', '23', '23T', '24'].  
 - The user specifies a sort column from a dropbox. They can choose one of: Player Name, Total Rushing Yards (Yds), Total Rushing Touchdowns (TD), or Longest Rush (Lng)). The records are sorted on a primary and secondary column(s). By using a secondary column, the application guarantees an ordering for the player records that will be consistent for the webpage table as well as in the downloaded CSV file.
     - If Total Rushing Yards or Total Rushing Touchdowns is selected by the user, then the secondary column is the Player Name.
     - If the Player Name is selected by the user, then the secondary column is the database ID for the records.

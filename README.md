@@ -255,7 +255,7 @@ redirected to http://localhost:4000/players
 - If the user navigates to a non-existent URL, they will see a 
 404 page that redirects them back to the Players listing:
 
-![FourZeroFourPage](assets/static/images/theScore.404page.png)
+    ![FourZeroFourPage](assets/static/images/theScore.404page.png)
 
 - There is a unit test for the 404 behaviour included in 
 [test/nfl_rushing_web/views/error_view_test.exs](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing_web/views/error_view_test.exs)

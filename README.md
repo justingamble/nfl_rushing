@@ -244,8 +244,8 @@ The advantage of this approach is there is no need to subsequently
 cleanup the temporary files.
 
 #### Scaling to support 10K players
-- As mentioned in the File download section, the download functionality i
-s implemented using streaming. 
+- As mentioned in the File download section, the download functionality is 
+implemented using streaming. 
 As the data is queried from the database, it is uploaded to the user. 
 The data is not all queried up-front, which means the download process 
 should start right away - even for larger datasets.

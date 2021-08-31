@@ -1,19 +1,18 @@
-defmodule NflRushing.PlayerLoadTest do
+defmodule NflRushing.ConversionHelpersTest do
   use ExUnit.Case, async: true
   alias NflRushing.PlayerStats.ConversionHelpers
-#  import PlayerStats.ConversionHelpers, only: [int_to_str: 1, str_to_int: 1, int_to_float: 1]
 
   describe "str_to_int() function" do
     test "success: returns an integer when input is already an integer" do
-      assert ConversionHelpers.str_to_int(5) == 5
+      assert ConversionHelpers.str_to_int(5) === 5
     end
 
     test "success: returns an integer when input string is a positive integer" do
-      assert ConversionHelpers.str_to_int("5") == 5
+      assert ConversionHelpers.str_to_int("5") === 5
     end
 
     test "success: returns an integer when input string is a negative integer" do
-      assert ConversionHelpers.str_to_int("-5") == -5
+      assert ConversionHelpers.str_to_int("-5") === -5
     end
 
     test "exception: raises an exception when input string is a float" do
@@ -69,6 +68,20 @@ defmodule NflRushing.PlayerLoadTest do
     test "exception: raises an exception when input is a float" do
       assert_raise FunctionClauseError, fn -> ConversionHelpers.int_to_str(5.2) end
     end
+  end
+
+  describe "int_to_float() function" do
+    test "success: given an integer, returns corresponding float" do
+      refute ConversionHelpers.int_to_float(1) === 1
+      assert ConversionHelpers.int_to_float(1) === 1.0
+    end
+    test "success: given a float, returns the same float" do
+      assert ConversionHelpers.int_to_float(1.2) === 1.2
+    end
+    test "exception: raises an exception when input is a string" do
+      assert_raise FunctionClauseError, fn -> ConversionHelpers.int_to_float("2") end
+    end
+
   end
 
 end

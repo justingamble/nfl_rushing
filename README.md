@@ -211,7 +211,8 @@ As the data is queried from the database, it is uploaded to the user.
 The data is not all queried up-front, which means the download process 
 should start right away - even for larger datasets.
 - Pagination was added to avoid displaying all the records on a 
-single page. This reduces load time. The pagination dropbox currently contains choices for 5, 10, 15, or 20 records/page. These can be changed to other sizes, as needed.
+single page. This reduces load time. The pagination dropbox currently contains choices for 5, 10, 15, or 20 records/page. These can be changed to other sizes, if needed.
+- A PostgreSQL database is used to store and query the player records.  Databases are designed to handle large data sets.
 - When the user presses the filter button, or changes the sorting 
 column, a "loading" icon is displayed. For larger datasets this 
 provides immediate feedback to the user. For small datasets, like the 

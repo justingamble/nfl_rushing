@@ -203,36 +203,6 @@ Elixir for this task:
       end
     ```
 
-#### File download
-- The download functionality is implemented using a Phoenix endpoint.  
-Once the download is complete, a message is sent to Phoenix PubSub. 
-The Phoenix Liveview application consumes the Phoenix PubSub message 
-and displays a flash message to the user.
-- The file being downloaded is streamed from the database to the user. 
-In particular, the data is not first written to a file on the web server. 
-The advantage of this approach is there is no need to subsequently 
-cleanup the temporary files.
-
-#### Scaling to support 10K players
-- As mentioned in the File download section, the download functionality i
-s implemented using streaming. 
-As the data is queried from the database, it is uploaded to the user. 
-The data is not all queried up-front, which means the download process 
-should start right away - even for larger datasets.
-- Pagination was added to avoid displaying all the records on a 
-single page. This reduces load time. The pagination dropbox currently 
-contains choices for 5, 10, 15, or 20 records/page. These can be changed 
-to other sizes, if needed.
-- A PostgreSQL database is used to store and query the player records. 
-Databases are designed to handle large data sets.
-- When the user presses the filter button, or changes the sorting 
-column, a "loading" icon is displayed. For larger datasets this 
-provides immediate feedback to the user, while the data is being loaded.
-For small datasets, like the sample 326 records, the loading icon disappears 
-right away and is barely noticeable.
-
-    ![LoadingIcon](assets/static/images/loading_icon.png)
-
 #### Sorting player records
 - Some player records have a `LNG` field with an integer, others have 
 an integer followed by 'T'.  Example: "29T".  When sorting on the LNG 
@@ -262,6 +232,36 @@ be consistent for the webpage table as well as in the downloaded CSV file.
 records where the first or last names include the letters 'adam'.
 - Searches are not case sensitive.  Searching on "adam" returns the 
 same results as "ADAM".
+
+#### File download
+- The download functionality is implemented using a Phoenix endpoint.  
+Once the download is complete, a message is sent to Phoenix PubSub. 
+The Phoenix Liveview application consumes the Phoenix PubSub message 
+and displays a flash message to the user.
+- The file being downloaded is streamed from the database to the user. 
+In particular, the data is not first written to a file on the web server. 
+The advantage of this approach is there is no need to subsequently 
+cleanup the temporary files.
+
+#### Scaling to support 10K players
+- As mentioned in the File download section, the download functionality i
+s implemented using streaming. 
+As the data is queried from the database, it is uploaded to the user. 
+The data is not all queried up-front, which means the download process 
+should start right away - even for larger datasets.
+- Pagination was added to avoid displaying all the records on a 
+single page. This reduces load time. The pagination dropbox currently 
+contains choices for 5, 10, 15, or 20 records/page. These can be changed 
+to other sizes, if needed.
+- A PostgreSQL database is used to store and query the player records. 
+Databases are designed to handle large data sets.
+- When the user presses the filter button, or changes the sorting 
+column, a "loading" icon is displayed. For larger datasets this 
+provides immediate feedback to the user, while the data is being loaded.
+For small datasets, like the sample 326 records, the loading icon disappears 
+right away and is barely noticeable.
+
+    ![LoadingIcon](assets/static/images/loading_icon.png)
 
 #### 404 page
 - If the user navigates to http://localhost:4000, they are 

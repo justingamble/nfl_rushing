@@ -199,15 +199,19 @@ If the player data in the database becomes corrupt, you can drop and recreate th
     - If Total Rushing Yards or Total Rushing Touchdowns is selected by the user, then the secondary column is the Player Name.
     - If the Player Name is selected by the user, then the secondary column is the database ID for the records.
     - If the Longest Rush is selected by the user, then there are two secondary columns.  First the record data is sorted by the numeric value of LNG, then by whether or not a trailing 'T' exists, and finally (if needed) by the Player Name.
+- Tests for sorting are found [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing_web/live/player_live_sort_test.exs) and [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing_web/live/player_live_sort_and_filter_test.exs)
 
 #### Filtering player records
 - Users can filter on an exact name.  Example: "Adam Thielen".
 - Users can filter on a partial name.  Example: "Adam" will return all records where the first or last names include the letters 'adam'.
 - Searches are not case sensitive.  Searching on "adam" returns the same results as "ADAM".
+- Tests for filtering are found [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing_web/live/player_live_filter_test.exs) and [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing_web/live/player_live_sort_and_filter_test.exs)
 
 #### File download
 - The download functionality is implemented using a Phoenix endpoint.  Once the download is complete, a message is sent to Phoenix PubSub.  The Phoenix Liveview application consumes the Phoenix PubSub message and displays a flash message to the user.
 - The file being downloaded is streamed from the database to the user.  In particular, the data is not first written to a file on the web server.  The advantage of this approach is there is no need to subsequently cleanup the temporary files.
+- Tests for the download behaviour are found [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing_web/controllers/api/download_controller_test.exs) and [here](https://github.com/justingamble/nfl_rushing/blob/main/test/nfl_rushing_web/live/player_live_download_test.exs)
+
 
 #### Scaling to support 10K players
 - As mentioned in the File download section, the download functionality is implemented using streaming.  As the data is queried from the database, it is uploaded to the user.  The data is not all queried up-front, which means the download process should start right away - even for larger datasets.

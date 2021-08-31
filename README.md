@@ -218,7 +218,7 @@ provides immediate feedback to the user, while the data is being loaded.
 For small datasets, like the sample 326 records, the loading icon disappears 
 right away and is barely noticeable.
 
-![LoadingIcon](assets/static/images/loading_icon.png)
+    ![LoadingIcon](assets/static/images/loading_icon.png)
 
 #### Sorting player records
 - Some player records have a `LNG` field with an integer, others have 

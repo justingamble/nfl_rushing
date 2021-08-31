@@ -7,8 +7,11 @@ defmodule NflRushing.PlayerStats.PlayerLoad do
     the resulting data into Ecto.
   """
 
-  import NflRushing.PlayerStats.PlayerStruct
+  alias NflRushing.PlayerStats
   alias NflRushing.PlayerStats.PlayerStruct
+
+  import PlayerStats.ConversionHelpers, only: [int_to_str: 1, str_to_int: 1, int_to_float: 1]
+  import PlayerStruct
 
   def get_clean_player_stats_in_a_list_of_structs(filename) when is_binary(filename) do
     parse_json_file_into_a_list_of_structs(filename)
@@ -101,25 +104,4 @@ defmodule NflRushing.PlayerStats.PlayerLoad do
     end)
   end
 
-  def int_to_str(number) when is_binary(number), do: number
-  def int_to_str(number) when is_integer(number), do: Integer.to_string(number)
-
-  def str_to_int(number) when is_integer(number), do: number
-
-  def str_to_int(number) when is_binary(number) do
-    {integer, remainder} =
-      String.replace(number, ",", "")
-      |> Integer.parse()
-
-    if remainder != "" do
-      raise "Failed conversion. Start string=#{inspect(number)}, Result integer: #{
-              inspect(integer)
-            }, remainder: #{inspect(remainder)}"
-    end
-
-    integer
-  end
-
-  def int_to_float(number) when is_float(number), do: number
-  def int_to_float(number) when is_integer(number), do: number / 1
 end
